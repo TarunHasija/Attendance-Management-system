@@ -1,4 +1,4 @@
-# ams
+# Attendance Management system
 
 A new Flutter project.
 
