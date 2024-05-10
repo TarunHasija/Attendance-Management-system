@@ -1,3 +1,4 @@
+import 'package:ams/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 
 class MobileScreen extends StatefulWidget {
@@ -12,7 +13,12 @@ class _MobileScreenState extends State<MobileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: 
-      Text("mobile Screen")
+      SingleChildScrollView(
+        child: Column(
+          children: [
+          ],
+        ),
+      )
     );
   }
 }
