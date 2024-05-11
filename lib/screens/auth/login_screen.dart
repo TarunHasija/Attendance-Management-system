@@ -1,4 +1,5 @@
 import 'package:ams/constant.dart';
+import 'package:ams/screens/auth/signup_screen.dart';
 import 'package:ams/widgets/input_field.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,19 +23,45 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Center(
         child: SizedBox(
-          width: isWeb?width/4:width/ 1.2,
+          width: isWeb ? width / 4 : width / 1.2,
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Text("Login Screen",style: TextStyle(fontSize: 25),),
-                SizedBox(height: 35,),
-                InputField(hintText: "Email", controller: _emailController),
-                SizedBox(
-                  height: 25,
+                Column(
+                  children: [
+                    const Text(
+                      "Login Screen",
+                      style: TextStyle(fontSize: 25),
+                    ),
+                    const SizedBox(
+                      height: 35,
+                    ),
+                    InputField(hintText: "Email", controller: _emailController),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    InputField(
+                        hintText: "Password", controller: _passwordController),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    ElevatedButton(onPressed: () {}, child: const Text("Login"))
+                  ],
                 ),
-                InputField(hintText: "Password", controller: _passwordController),
-                SizedBox(height: 25,),
-                ElevatedButton(onPressed: (){}, child: Text("Login"))
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Dont't have an account"),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => SignupScreen()));
+                        },
+                        child: Text("Signup")),
+                  ],
+                )
               ],
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:ams/constant.dart';
+import 'package:ams/screens/auth/login_screen.dart';
 import 'package:ams/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 
@@ -23,37 +24,53 @@ class _SignupScreenState extends State<SignupScreen> {
           width: isWeb ? width / 4 : width / 1.2,
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  "Login Screen",
-                  style: TextStyle(fontSize: 25),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "SignUp Screen",
+                      style: TextStyle(fontSize: 25),
+                    ),
+                    const SizedBox(
+                      height: 35,
+                    ),
+                    InputField(hintText: "Email", controller: _emailController),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    InputField(
+                        hintText: "Username", controller: _usernameController),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    InputField(
+                        hintText: "Password", controller: _passwordController),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {}, child: const Text("Sign Up"))
+                  ],
                 ),
-                const SizedBox(
-                  height: 35,
-                ),
-                InputField(hintText: "Email", controller: _emailController),
-                const SizedBox(
-                  height: 25,
-                ),
-                InputField(
-                    hintText: "Username", controller: _usernameController),
-                const SizedBox(
-                  height: 25,
-                ),
-                InputField(
-                    hintText: "Password", controller: _passwordController),
-                const SizedBox(
-                  height: 25,
-                ),
-                ElevatedButton(onPressed: () {}, child: const Text("Sign Up"))
+                Column(
+                  children: [
+                    Text("Already Registered"),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
+                        },
+                        child: Text("Login")),
+                  ],
+                )
               ],
             ),
           ),
         ),
       ),
     );
-    ;
   }
 }
