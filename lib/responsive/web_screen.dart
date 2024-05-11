@@ -1,3 +1,4 @@
+import 'package:ams/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class WebScreen extends StatefulWidget {
@@ -10,10 +11,6 @@ class WebScreen extends StatefulWidget {
 class _WebScreenState extends State<WebScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: LayoutBuilder(
-      builder: (context, constraints) {
-        return Text((constraints.maxHeight).toString()+" "+(constraints.maxWidth).toString());
-      },
-    ));
+    return LoginScreen();
   }
 }

@@ -1,4 +1,4 @@
-import 'package:ams/responsive/screens/auth/login_screen.dart';
+import 'package:ams/screens/auth/login_screen.dart';
 import 'package:ams/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 
