@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             InputField(hintText: "Email",controller:_emailController),
-            InputField(hintText: "Email",controller:_passwordController),
+            InputField(hintText: "Password",controller:_passwordController),
           ],
         ),
       ),
