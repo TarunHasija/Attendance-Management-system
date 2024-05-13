@@ -1,8 +1,8 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 
-double deviceHeight = MediaQuery.of(context as BuildContext).size.height;
-double deviceWidth = MediaQuery.of(context as BuildContext).size.width;
+double deviceHeight(BuildContext context) =>
+    MediaQuery.of(context as BuildContext).size.height;
+double deviceWidth(BuildContext context) =>
+    MediaQuery.of(context as BuildContext).size.width;
 
-Color primary = Colors.grey;
+Color primary = Color.fromARGB(248, 28, 149, 255);
