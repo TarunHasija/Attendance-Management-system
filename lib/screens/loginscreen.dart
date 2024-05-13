@@ -1,5 +1,9 @@
 import 'package:ams/constant.dart';
+import 'package:ams/widgets/fieldtitle.dart';
+import 'package:ams/widgets/inputbox.dart';
+import 'package:ams/widgets/loginbutton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,7 +15,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
+  bool iskeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(context);
+  TextEditingController idController = TextEditingController();
+  TextEditingController passController = TextEditingController();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           Container(
@@ -20,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: BoxDecoration(
                 color: primary,
                 borderRadius:
-                    const BorderRadius.only(bottomRight: Radius.circular(35))),
+                    const BorderRadius.only(bottomRight: Radius.circular(70))),
             child: Center(
               child: Icon(
                 Icons.person,
@@ -31,13 +39,19 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.only(
-                top: deviceHeight(context) / 15,
-                bottom: deviceHeight(context) / 20),
+                top: deviceHeight(context) / 20,
+                bottom: deviceHeight(context) / 40),
             child: Text(
-              "Login",
+              iskeyboardVisible ?"Login":"Key",
               style: TextStyle(fontSize: deviceWidth(context) / 13),
             ),
           ),
+
+
+
+// !! __________ Employee id and password Input fields___________
+      
+      
           Container(
               margin: EdgeInsets.symmetric(
                 horizontal: deviceWidth(context) / 12,
@@ -45,49 +59,27 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Employee ID",
-                    style: TextStyle(fontSize: deviceWidth(context) / 26),
+                  const FieldTitle(
+                    title: "Employee Id",
+                  ),
+                  LoginInputBox(
+                    hintText: "Enter Employee Id",
+                    controller: idController,
+                    iconn: Icons.person,
                   ),
                   SizedBox(
-                    height: deviceHeight(context) * .01,
+                    height: deviceHeight(context)*.02,
                   ),
-                  Container(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 10,
-                            offset: Offset(2, 2))
-                      ],
-                      color: Colors.white,
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: deviceWidth(context) / 26),
-                          width: deviceWidth(context) / 15,
-                          child: Icon(
-                            Icons.person,
-                            color: primary,
-                            size: deviceWidth(context) / 13,
-                          ),
-                        ),
-                        Expanded(
-                            child: TextFormField(
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: deviceHeight(context) / 35),
-                              border: InputBorder.none,
-                              hintText: "Enter Employee Id"),
-                        ))
-                      ],
-                    ),
-                  )
+                  const FieldTitle(
+                    title: "Password",
+                  ),
+                  LoginInputBox(
+                    hintText: "Enter  Password",
+                    controller: passController,
+                    iconn: Icons.lock_open_outlined,
+                  ),
+
+                  Loginbutton(function: (){},)
                 ],
               )),
         ],
@@ -95,3 +87,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
