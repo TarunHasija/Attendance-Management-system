@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:ams/constant.dart';
 
 class Loginbutton extends StatelessWidget {
-  Function function;
-  Loginbutton({
+  final Function function;
+  const Loginbutton({
     super.key,
     required this.function,
   });
@@ -24,7 +24,7 @@ class Loginbutton extends StatelessWidget {
           style: ButtonStyle(
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15))),
-            backgroundColor: MaterialStatePropertyAll(bluee),
+            backgroundColor: MaterialStatePropertyAll(primary),
           ),
           child: const Text(
             "Login",
