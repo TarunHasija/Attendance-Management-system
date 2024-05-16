@@ -24,7 +24,7 @@ class Loginbutton extends StatelessWidget {
           style: ButtonStyle(
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15))),
-            backgroundColor: MaterialStatePropertyAll(primary),
+            backgroundColor: MaterialStatePropertyAll(bluee),
           ),
           child: const Text(
             "Login",

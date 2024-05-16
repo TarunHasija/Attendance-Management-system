@@ -6,22 +6,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+TextEditingController idController = TextEditingController();
+TextEditingController passController = TextEditingController();
+CollectionReference collectionReference =
+    FirebaseFirestore.instance.collection('Employee');
+
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController idController = TextEditingController();
-    TextEditingController passController = TextEditingController();
-    CollectionReference collectionReference =
-        FirebaseFirestore.instance.collection('Employee');
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+      
+        // resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
+          
+          reverse: true,
+          // physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               Column(
@@ -30,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: deviceHeight(context) / 2.5,
                     width: deviceWidth(context),
                     decoration: BoxDecoration(
-                        color: primary,
+                        gradient: primary,
                         borderRadius: const BorderRadius.only(
                             bottomRight: Radius.circular(70))),
                     child: Center(
@@ -50,9 +55,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(fontSize: deviceWidth(context) / 13),
                     ),
                   ),
-
+        
                   // !! __________ Employee id and password Input fields___________
-
+        
                   Container(
                       margin: EdgeInsets.symmetric(
                         horizontal: deviceWidth(context) / 12,
@@ -65,8 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           LoginInputBox(
                             hintText: "Enter Employee Id",
-                            Textcontroller: idController,
-                            iconn: Icons.person,
+                            controller: idController,
+                            iconn: const Icon(Icons.person),
                           ),
                           SizedBox(
                             height: deviceHeight(context) * .02,
@@ -76,27 +81,28 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           LoginInputBox(
                             hintText: "Enter  Password",
-                            Textcontroller: passController,
-                            iconn: Icons.lock_open_outlined,
+                            controller: passController,
+                            iconn: const Icon(Icons.lock_open_outlined),
                           ),
                           Loginbutton(
                             function: () async {
                               String id = idController.text.trim();
                               String password = passController.text.trim();
-                              QuerySnapshot snapshot = await collectionReference.get();
+                              QuerySnapshot snapshot =
+                                  await collectionReference.get();
                               print(snapshot.docs[0]['id']);
-
+        
                               if (id.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                        content: Text("Employee id is Empty")));
-                                        
+                                        content:
+                                            Text("Employee id is Empty")));
                               }
                               if (password.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                        content: Text("Employee password is Empty")));
-
+                                        content: Text(
+                                            "Employee password is Empty")));
                               }
                             },
                           )
@@ -105,7 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ],
+            
           ),
+          
         ));
   }
 }

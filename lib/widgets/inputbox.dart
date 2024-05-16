@@ -2,59 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:ams/constant.dart';
 
 class LoginInputBox extends StatelessWidget {
-  final IconData iconn;
+  final Icon iconn;
   final String hintText;
-  final TextEditingController Textcontroller;
+  final TextEditingController controller;
 
   const LoginInputBox({
     super.key,
     required this.iconn,
     required this.hintText,
-    required this.Textcontroller,
+    required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromARGB(66, 86, 86, 86),
-            blurRadius: 10,
-            offset: Offset(2, 2),
-          )
-        ],
-        color: Colors.white,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: deviceHeight(context)/100
       ),
-      child: Row(
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: deviceWidth(context) / 26),
-            width: deviceWidth(context) / 15,
-            child: Icon(
-              iconn,
-              color: primary,
-              size: deviceWidth(context) / 13,
-            ),
+      child: SizedBox(
+        // margin: EdgeInsets.all(10.0),
+        width: double.infinity,
+        height: deviceHeight(context)*.08,
+        child:TextFormField(
+          cursorColor: bluee,
+          controller: controller,
+          decoration: InputDecoration(
+            prefixIcon: iconn,
+            iconColor: bluee,
+            labelText: hintText,
+            border: OutlineInputBorder(
+              
+              borderRadius: BorderRadius.circular(15.0),
+              
+            )
+            
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: TextFormField(
-                controller: Textcontroller,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: deviceHeight(context) / 35,
-                  ),
-                  border: InputBorder.none,
-                  hintText: hintText,
-                ),
-                maxLines: 1,
-              ),
-            ),
-          ),
-        ],
+        
+        ) ,
       ),
     );
   }
