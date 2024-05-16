@@ -4,14 +4,14 @@ import 'package:ams/constant.dart';
 class LoginInputBox extends StatelessWidget {
   final IconData iconn;
   final String hintText;
-  final TextEditingController controller;
+  final TextEditingController Textcontroller;
 
   const LoginInputBox({
-    Key? key,
+    super.key,
     required this.iconn,
     required this.hintText,
-    required this.controller,
-  }) : super(key: key);
+    required this.Textcontroller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +42,7 @@ class LoginInputBox extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(right: 20.0),
               child: TextFormField(
-                controller: controller,
-                enableSuggestions: false,
-                autocorrect: false,
+                controller: Textcontroller,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(
                     vertical: deviceHeight(context) / 35,

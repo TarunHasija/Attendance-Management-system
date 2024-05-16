@@ -6,9 +6,9 @@ import 'package:ams/constant.dart';
 class Loginbutton extends StatelessWidget {
   Function function;
   Loginbutton({
-    Key? key,
+    super.key,
     required this.function,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,3 +35,5 @@ class Loginbutton extends StatelessWidget {
     );
   }
 }
+
+
