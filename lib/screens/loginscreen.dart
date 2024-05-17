@@ -1,32 +1,89 @@
-
 import 'package:ams/constant.dart';
+import 'package:ams/screens/homescreen.dart';
 import 'package:ams/widgets/fieldtitle.dart';
 import 'package:ams/widgets/inputbox.dart';
 import 'package:ams/widgets/loginbutton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-TextEditingController idController = TextEditingController();
-TextEditingController passController = TextEditingController();
-CollectionReference collectionReference =
-    FirebaseFirestore.instance.collection('Employee');
-
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController idController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+  final CollectionReference collectionReference =
+      FirebaseFirestore.instance.collection('Employee');
+  late SharedPreferences sharedPreferences;
+
+  @override
+  void initState() {
+    super.initState();
+    _initSharedPreferences();
+  }
+
+  void _initSharedPreferences() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
+
+  Future<void> _login() async {
+    FocusScope.of(context).unfocus();
+    String id = idController.text.trim();
+    String password = passController.text.trim();
+
+    if (id.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Employee id is Empty")));
+    } else if (password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Employee password is Empty")));
+    } else {
+      try {
+        QuerySnapshot snapshot = await collectionReference
+            .where('id', isEqualTo: id)
+            .get();
+
+        if (snapshot.docs.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Employee id doesn't exist")));
+          return;
+        }
+
+        bool passwordMatched = false;
+        for (var doc in snapshot.docs) {
+          if (password == doc['password']) {
+            passwordMatched = true;
+            break;
+          }
+        }
+
+        if (passwordMatched) {
+          await sharedPreferences.setString('Employeeid', id);
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const HomeScreen()));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Password is not correct")));
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("An error occurred: ${e.toString()}")));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-        // resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
       reverse: true,
-      // physics: const BouncingScrollPhysics(),
       child: Column(
         children: [
           Column(
@@ -55,9 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(fontSize: deviceWidth(context) / 13),
                 ),
               ),
-
-              // !! __________ Employee id and password Input fields___________
-
               Container(
                   margin: EdgeInsets.symmetric(
                     horizontal: deviceWidth(context) / 12,
@@ -82,56 +136,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       LoginInputBox(
                         obcurseText: true,
-                        hintText: "Enter  Password",
+                        hintText: "Enter Password",
                         controller: passController,
                         iconn: const Icon(Icons.lock_open_outlined),
                       ),
                       Loginbutton(
-// !!------------- Function for login -----------------
-                        function: () async {
-                          FocusScope.of(context).unfocus();
-                          String id = idController.text.trim();
-                          String password = passController.text.trim();
-
-                          if (id.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("Employee id is Empty")));
-                          } else if (password.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text("Employee password is Empty")));
-                          } else {
-                            QuerySnapshot snapshot = await collectionReference
-                                .where('id', isEqualTo: id)
-                                .get();
-                            try {
-                              if (password == snapshot.docs[0]['password']) {
-                                print("continue");
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                            Text("password is not correct")));
-                              }
-                            } catch (e) {
-                              String error = '';
-
-                              if (e.toString() ==
-                                  "RangeError (index): Invalid value: Valid value range is smpty: 0 ") {
-                                setState(() {
-                                  error = "Employee id doesnt exist";
-                                });
-                              } else {
-                                error = "Error occurred";
-                              }
-
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(content: Text(error)));
-                            }
-                          }
-                        },
+                        function: _login,
                       )
                     ],
                   )),
