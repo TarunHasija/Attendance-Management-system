@@ -1,7 +1,7 @@
 import 'package:ams/constant.dart';
-import 'package:ams/screens/calenderscreen.dart';
-import 'package:ams/screens/profilescreen.dart';
-import 'package:ams/screens/todayscreen.dart';
+import 'package:ams/screens/navscreens/calenderscreen.dart';
+import 'package:ams/screens/navscreens/profilescreen.dart';
+import 'package:ams/screens/navscreens/todayscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
