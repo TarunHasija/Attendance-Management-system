@@ -22,9 +22,9 @@ class Loginbutton extends StatelessWidget {
             function();
           },
           style: ButtonStyle(
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15))),
-            backgroundColor: MaterialStatePropertyAll(primary),
+            backgroundColor: WidgetStatePropertyAll(primary),
           ),
           child: const Text(
             "Login",
