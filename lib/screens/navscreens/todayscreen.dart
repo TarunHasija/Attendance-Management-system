@@ -1,4 +1,5 @@
 import 'package:ams/constant.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
@@ -23,7 +24,7 @@ class _TodayScreenState extends State<TodayScreen> {
             child: Text(
               "Welcome",
               style: TextStyle(
-                  color: Colors.black54,
+                  color:primary,
                   letterSpacing: 2,
                   fontSize: deviceWidth(context) * .05),
             ),
@@ -89,7 +90,7 @@ class _TodayScreenState extends State<TodayScreen> {
                             color: const Color.fromARGB(255, 83, 83, 83)),
                       ),
                       Text(
-                        "12:30",
+                        "--/--",
                         style: TextStyle(fontSize: deviceWidth(context) / 18),
                       )
                     ],
@@ -115,17 +116,32 @@ class _TodayScreenState extends State<TodayScreen> {
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              "20:00:01",
+              "12:30:00 PM",
               style: TextStyle(
                   fontSize: deviceWidth(context) / 20, color: Colors.black54),
             ),
           ),
-          Builder(builder: (context) {
-            final GlobalKey<SlideActionState> key = GlobalKey();
-            return SlideAction(
-              text: "Slide to Check In",
-            );
-          })
+          Container(
+            margin: EdgeInsets.only(top:deviceHeight(context)/20),
+            child: Builder(builder: (context) {
+              final GlobalKey<SlideActionState> key = GlobalKey();
+              return  SlideAction(
+                innerColor: primary,
+                outerColor: Colors.white,
+                borderRadius: CupertinoCheckbox.width,
+                text: "Slide to Check In",
+
+                textStyle:  TextStyle(
+                  color: Colors.black54,
+                  fontSize: deviceWidth(context)/20
+                ),
+                key: key,
+                onSubmit: (){
+                  key.currentState!.reset();
+                },
+              );
+            }),
+          )
         ],
       ),
     ));
