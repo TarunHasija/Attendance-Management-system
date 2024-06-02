@@ -1,7 +1,11 @@
 import 'package:ams/constant.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:slide_to_act/slide_to_act.dart';
+
+import '../../model/user.dart';
 
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key});
@@ -24,7 +28,7 @@ class _TodayScreenState extends State<TodayScreen> {
             child: Text(
               "Welcome",
               style: TextStyle(
-                  color:primary,
+                  color: primary,
                   letterSpacing: 2,
                   fontSize: deviceWidth(context) * .05),
             ),
@@ -32,7 +36,7 @@ class _TodayScreenState extends State<TodayScreen> {
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              "Employee",
+              "Employee ${User.username}",
               style: TextStyle(
                   letterSpacing: 2, fontSize: deviceWidth(context) * .06),
             ),
@@ -101,43 +105,54 @@ class _TodayScreenState extends State<TodayScreen> {
               alignment: Alignment.centerLeft,
               child: RichText(
                 text: TextSpan(
-                    text: "11",
+                    text: "${DateTime.now().day} ",
                     style: TextStyle(
                         color: primary, fontSize: deviceWidth(context) / 18),
-                    children: const [
+                    children: [
                       TextSpan(
-                          text: "Jan 2024",
-                          style: TextStyle(
+                          text: DateFormat('MMMM yyyy').format(DateTime.now()),
+                          style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w300,
                               fontFamily: 'Nexa'))
                     ]),
               )),
+          StreamBuilder(
+              stream: Stream.periodic(const Duration(seconds: 1)),
+              builder: (context, snapshot) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "${DateFormat('hh:mm:ss a').format(DateTime.now())}",
+                    style: TextStyle(
+                        fontSize: deviceWidth(context) / 20,
+                        color: Colors.black54),
+                  ),
+                );
+              }),
           Container(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "12:30:00 PM",
-              style: TextStyle(
-                  fontSize: deviceWidth(context) / 20, color: Colors.black54),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top:deviceHeight(context)/20),
+            margin: EdgeInsets.only(top: deviceHeight(context) / 20),
             child: Builder(builder: (context) {
               final GlobalKey<SlideActionState> key = GlobalKey();
-              return  SlideAction(
+              return SlideAction(
                 innerColor: primary,
                 outerColor: Colors.white,
-                borderRadius: CupertinoCheckbox.width,
-                text: "Slide to Check In",
+                height: deviceHeight(context) * 0.075,
+                elevation: 5,
 
-                textStyle:  TextStyle(
-                  color: Colors.black54,
-                  fontSize: deviceWidth(context)/20
-                ),
+                animationDuration: Duration(milliseconds: 500),
+                text: "Slide to Check In",
+                textStyle: TextStyle(
+                    color: Colors.black54, fontSize: deviceWidth(context) / 20),
                 key: key,
-                onSubmit: (){
-                  key.currentState!.reset();
+                onSubmit: () async {
+                  print(DateFormat('hh:mm').format(DateTime.now()));
+                  QuerySnapshot snap = await FirebaseFirestore.instance
+                      .collection("Employee")
+                      .where('id', isEqualTo: User.username)
+                      .get();
+                  print(snap.docs[0].id);
+                  // await
                 },
               );
             }),

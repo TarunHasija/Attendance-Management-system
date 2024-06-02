@@ -3,6 +3,7 @@ import 'package:ams/screens/loginscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ams/model/user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,9 +46,21 @@ class _AuthCheckState extends State<AuthCheck> {
 
   void _getCurrentUser() async {
     sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      userAvailable = sharedPreferences.getString('Employeeid')?.isNotEmpty ?? false;
-    });
+    try{
+      if(sharedPreferences.getString('Employeeid')!=null){
+        setState(() {
+          User.username = sharedPreferences.getString('Employeeid')!;
+          userAvailable = true;
+          // userAvailable = sharedPreferences.getString('Employeeid')?.isNotEmpty ?? false;
+        });
+      }
+    }
+    catch(e){
+      setState(() {
+        userAvailable = false;
+      });
+    }
+
   }
 
   @override

@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-int currentIndex = 0;
+int currentIndex = 1;
 
 class _HomeScreenState extends State<HomeScreen> {
   List<IconData> navigationIcons = [
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: currentIndex,
-      children: [
+      children: const [
         CalenderScreen(),
         TodayScreen(),
         ProfileScreen(),
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     currentIndex = i;
                   });
                 },
-                child: Container(
+                child: SizedBox(
                   height: deviceHeight(context),
                   width: deviceWidth(context),
                   child: Center(
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                   
                       i==currentIndex ? Container(
-                        margin: EdgeInsets.only(top: 6),
+                        margin: const EdgeInsets.only(top: 6),
                         height: deviceHeight(context)*.006,
                         width: deviceWidth(context)*0.05,
                         decoration: BoxDecoration(
