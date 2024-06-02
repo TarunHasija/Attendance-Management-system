@@ -88,7 +88,7 @@ class _TodayScreenState extends State<TodayScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "Check out",
+                        "Check Out",
                         style: TextStyle(
                             fontSize: deviceWidth(context) / 20,
                             color: const Color.fromARGB(255, 83, 83, 83)),
