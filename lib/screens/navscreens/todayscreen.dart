@@ -1,3 +1,6 @@
+import 'dart:async';
+
+
 import 'package:ams/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -166,7 +169,7 @@ class _TodayScreenState extends State<TodayScreen> {
                   ),
                 );
               }),
-          checkIn == '--/--'
+          checkOut == '--/--'
               ? Container(
                   margin: EdgeInsets.only(top: deviceHeight(context) / 20),
                   child: Builder(builder: (context) {
@@ -184,7 +187,13 @@ class _TodayScreenState extends State<TodayScreen> {
                             fontSize: deviceWidth(context) / 20),
                         key: key,
                         onSubmit: () async {
-                          key.currentState!.reset();
+
+                          Timer(Duration(seconds: 1), (){
+                            key.currentState!.reset();
+                          });
+
+
+
                           CollectionReference colref =
                               FirebaseFirestore.instance.collection('Employee');
                           print(DateFormat('hh:mm').format(DateTime.now()));
@@ -202,6 +211,11 @@ class _TodayScreenState extends State<TodayScreen> {
 
                           try {
                             String checkIn = snap2['checkIn'];
+
+                            setState(() {
+                              checkOut = DateFormat('hh:mm').format(DateTime.now());
+                            });
+
                             await colref
                                 .doc(snap.docs[0].id)
                                 .collection("Record")
@@ -213,6 +227,9 @@ class _TodayScreenState extends State<TodayScreen> {
                                   DateFormat('hh:mm').format(DateTime.now()),
                             });
                           } catch (e) {
+                            setState(() {
+                              checkIn = DateFormat('hh:mm').format(DateTime.now());
+                            });
                             await colref
                                 .doc(snap.docs[0].id)
                                 .collection("Record")
