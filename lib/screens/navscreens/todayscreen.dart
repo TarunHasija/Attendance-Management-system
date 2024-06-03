@@ -139,19 +139,28 @@ class _TodayScreenState extends State<TodayScreen> {
                 outerColor: Colors.white,
                 height: deviceHeight(context) * 0.075,
                 elevation: 5,
-
                 animationDuration: Duration(milliseconds: 500),
                 text: "Slide to Check In",
                 textStyle: TextStyle(
                     color: Colors.black54, fontSize: deviceWidth(context) / 20),
                 key: key,
                 onSubmit: () async {
+                  CollectionReference colref =
+                      FirebaseFirestore.instance.collection('Employee');
                   print(DateFormat('hh:mm').format(DateTime.now()));
-                  QuerySnapshot snap = await FirebaseFirestore.instance
-                      .collection("Employee")
-                      .where('id', isEqualTo: User.username)
-                      .get();
+                  QuerySnapshot snap =
+                      await colref.where('id', isEqualTo: User.username).get();
                   print(snap.docs[0].id);
+                  print(DateFormat('MMMM yyyy').format(DateTime.now()));
+                  DocumentSnapshot snap2 = await colref.doc(snap.docs[0].id).collection('Record').doc(DateFormat('dd MMMM YYYY').format(DateTime.now())).get();
+                  print(snap2['checkIn']);
+                  await colref
+                      .doc(snap.docs[0].id)
+                      .collection("Record")
+                      .doc(DateFormat('MMMM yyyy').format(DateTime.now()))
+                      .update({
+                    'checkIn': DateFormat('hh:mm').format(DateTime.now())
+                  });
                   // await
                 },
               );
