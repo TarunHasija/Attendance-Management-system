@@ -1,6 +1,5 @@
 import 'package:ams/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:slide_to_act/slide_to_act.dart';
@@ -15,6 +14,43 @@ class TodayScreen extends StatefulWidget {
 }
 
 class _TodayScreenState extends State<TodayScreen> {
+  @override
+  String checkIn = "--/--";
+  String checkOut = "--/--";
+  @override
+  void initState() {
+    // TODO: implement initState
+    print('hello');
+    getRecord();
+    super.initState();
+  }
+
+  getRecord() async {
+    try {
+      CollectionReference colref =
+          FirebaseFirestore.instance.collection('Employee');
+      // print(DateFormat('hh:mm').format(DateTime.now()));
+      QuerySnapshot snap =
+          await colref.where('id', isEqualTo: User.username).get();
+      // print(snap.docs[0].id);
+      // print(DateFormat('MMMM yyyy').format(DateTime.now()));
+      DocumentSnapshot snap2 = await colref
+          .doc(snap.docs[0].id)
+          .collection('Record')
+          .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+          .get();
+      setState(() {
+        checkIn = snap2['checkIn'];
+        checkOut = snap2['checkOut'];
+      });
+    } catch (e) {
+      String checkIn = "--/--";
+      String checkOut = "--/--";
+    }
+    print(checkIn);
+    print(checkOut);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +113,7 @@ class _TodayScreenState extends State<TodayScreen> {
                             color: const Color.fromARGB(255, 83, 83, 83)),
                       ),
                       Text(
-                        "09:30",
+                        checkIn,
                         style: TextStyle(fontSize: deviceWidth(context) / 18),
                       )
                     ],
@@ -94,7 +130,7 @@ class _TodayScreenState extends State<TodayScreen> {
                             color: const Color.fromARGB(255, 83, 83, 83)),
                       ),
                       Text(
-                        "--/--",
+                        checkOut,
                         style: TextStyle(fontSize: deviceWidth(context) / 18),
                       )
                     ],
@@ -130,42 +166,78 @@ class _TodayScreenState extends State<TodayScreen> {
                   ),
                 );
               }),
-          Container(
-            margin: EdgeInsets.only(top: deviceHeight(context) / 20),
-            child: Builder(builder: (context) {
-              final GlobalKey<SlideActionState> key = GlobalKey();
-              return SlideAction(
-                innerColor: primary,
-                outerColor: Colors.white,
-                height: deviceHeight(context) * 0.075,
-                elevation: 5,
-                animationDuration: Duration(milliseconds: 500),
-                text: "Slide to Check In",
-                textStyle: TextStyle(
-                    color: Colors.black54, fontSize: deviceWidth(context) / 20),
-                key: key,
-                onSubmit: () async {
-                  CollectionReference colref =
-                      FirebaseFirestore.instance.collection('Employee');
-                  print(DateFormat('hh:mm').format(DateTime.now()));
-                  QuerySnapshot snap =
-                      await colref.where('id', isEqualTo: User.username).get();
-                  print(snap.docs[0].id);
-                  print(DateFormat('MMMM yyyy').format(DateTime.now()));
-                  DocumentSnapshot snap2 = await colref.doc(snap.docs[0].id).collection('Record').doc(DateFormat('dd MMMM YYYY').format(DateTime.now())).get();
-                  print(snap2['checkIn']);
-                  await colref
-                      .doc(snap.docs[0].id)
-                      .collection("Record")
-                      .doc(DateFormat('MMMM yyyy').format(DateTime.now()))
-                      .update({
-                    'checkIn': DateFormat('hh:mm').format(DateTime.now())
-                  });
-                  // await
-                },
-              );
-            }),
-          )
+          checkIn == '--/--'
+              ? Container(
+                  margin: EdgeInsets.only(top: deviceHeight(context) / 20),
+                  child: Builder(builder: (context) {
+                    final GlobalKey<SlideActionState> key = GlobalKey();
+                    return SlideAction(
+                        innerColor: primary,
+                        outerColor: Colors.white,
+                        elevation: 5,
+                        animationDuration: const Duration(milliseconds: 500),
+                        text: checkIn == '--/--'
+                            ? "Slide to Check In"
+                            : "Slide to Check out",
+                        textStyle: TextStyle(
+                            color: Colors.black54,
+                            fontSize: deviceWidth(context) / 20),
+                        key: key,
+                        onSubmit: () async {
+                          key.currentState!.reset();
+                          CollectionReference colref =
+                              FirebaseFirestore.instance.collection('Employee');
+                          print(DateFormat('hh:mm').format(DateTime.now()));
+                          QuerySnapshot snap = await colref
+                              .where('id', isEqualTo: User.username)
+                              .get();
+                          print(snap.docs[0].id);
+                          print(DateFormat('MMMM yyyy').format(DateTime.now()));
+                          DocumentSnapshot snap2 = await colref
+                              .doc(snap.docs[0].id)
+                              .collection('Record')
+                              .doc(DateFormat('dd MMMM yyyy')
+                                  .format(DateTime.now()))
+                              .get();
+
+                          try {
+                            String checkIn = snap2['checkIn'];
+                            await colref
+                                .doc(snap.docs[0].id)
+                                .collection("Record")
+                                .doc(DateFormat('dd MMMM yyyy')
+                                    .format(DateTime.now()))
+                                .update({
+                              'checkIn': checkIn,
+                              'checkOut':
+                                  DateFormat('hh:mm').format(DateTime.now()),
+                            });
+                          } catch (e) {
+                            await colref
+                                .doc(snap.docs[0].id)
+                                .collection("Record")
+                                .doc(DateFormat('dd MMMM yyyy')
+                                    .format(DateTime.now()))
+                                .set({
+                              'checkIn':
+                                  DateFormat('hh:mm').format(DateTime.now()),
+                              'checkOut':
+                                  DateFormat('hh:mm').format(DateTime.now())
+
+                              // 'checkOut':checkOut
+                            });
+                            // await
+                          }
+                        });
+                  }),
+                )
+              : Container(
+            margin: EdgeInsets.only(top: 32),
+                  child: Text("You Have completed the day!!",style: TextStyle(
+                    fontSize: deviceWidth(context)/20,
+                    color: Colors.black,
+                  ),),
+                )
         ],
       ),
     ));
