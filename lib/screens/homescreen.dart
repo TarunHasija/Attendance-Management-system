@@ -2,8 +2,11 @@ import 'package:ams/constant.dart';
 import 'package:ams/screens/navscreens/calenderscreen.dart';
 import 'package:ams/screens/navscreens/profilescreen.dart';
 import 'package:ams/screens/navscreens/todayscreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../model/user.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 int currentIndex = 1;
+String id = '';
 
 class _HomeScreenState extends State<HomeScreen> {
   List<IconData> navigationIcons = [
@@ -20,18 +24,31 @@ class _HomeScreenState extends State<HomeScreen> {
     FontAwesomeIcons.check,
     FontAwesomeIcons.user,
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getId();
+  }
+
+  void getId() async {
+    QuerySnapshot snap = await FirebaseFirestore.instance
+        .collection('Employee')
+        .where('id', isEqualTo: User.employeeId)
+        .get();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: currentIndex,
-      children: const [
-        CalenderScreen(),
-        TodayScreen(),
-        ProfileScreen(),
-
-
-      ],),
+      body: IndexedStack(
+        index: currentIndex,
+        children: const [
+          CalenderScreen(),
+          TodayScreen(),
+          ProfileScreen(),
+        ],
+      ),
       bottomNavigationBar: Container(
         margin: EdgeInsets.only(
             left: deviceWidth(context) * 0.04,
@@ -65,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: deviceWidth(context),
                   child: Center(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         navigationIcons[i],
@@ -74,16 +91,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             ? deviceHeight(context) * 0.03
                             : deviceHeight(context) * 0.025,
                       ),
-                  
-                      i==currentIndex ? Container(
-                        margin: const EdgeInsets.only(top: 6),
-                        height: deviceHeight(context)*.006,
-                        width: deviceWidth(context)*0.05,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(12)),
-                          color: primary,
-                        ),
-                      ):const SizedBox(),
+                      i == currentIndex
+                          ? Container(
+                              margin: const EdgeInsets.only(top: 6),
+                              height: deviceHeight(context) * .006,
+                              width: deviceWidth(context) * 0.05,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(12)),
+                                color: primary,
+                              ),
+                            )
+                          : const SizedBox(),
                     ],
                   )),
                 ),

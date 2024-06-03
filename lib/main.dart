@@ -49,7 +49,7 @@ class _AuthCheckState extends State<AuthCheck> {
     try{
       if(sharedPreferences.getString('Employeeid')!=null){
         setState(() {
-          User.username = sharedPreferences.getString('Employeeid')!;
+          User.employeeId = sharedPreferences.getString('Employeeid')!;
           userAvailable = true;
           // userAvailable = sharedPreferences.getString('Employeeid')?.isNotEmpty ?? false;
         });

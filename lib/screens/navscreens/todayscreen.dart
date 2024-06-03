@@ -34,7 +34,7 @@ class _TodayScreenState extends State<TodayScreen> {
           FirebaseFirestore.instance.collection('Employee');
       // print(DateFormat('hh:mm').format(DateTime.now()));
       QuerySnapshot snap =
-          await colref.where('id', isEqualTo: User.username).get();
+          await colref.where('id', isEqualTo: User.employeeId).get();
       // print(snap.docs[0].id);
       // print(DateFormat('MMMM yyyy').format(DateTime.now()));
       DocumentSnapshot snap2 = await colref
@@ -75,7 +75,7 @@ class _TodayScreenState extends State<TodayScreen> {
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              "Employee ${User.username}",
+              "Employee ${User.employeeId}",
               style: TextStyle(
                   letterSpacing: 2, fontSize: deviceWidth(context) * .06),
             ),
@@ -198,7 +198,7 @@ class _TodayScreenState extends State<TodayScreen> {
                               FirebaseFirestore.instance.collection('Employee');
                           print(DateFormat('hh:mm').format(DateTime.now()));
                           QuerySnapshot snap = await colref
-                              .where('id', isEqualTo: User.username)
+                              .where('id', isEqualTo: User.employeeId)
                               .get();
                           print(snap.docs[0].id);
                           print(DateFormat('MMMM yyyy').format(DateTime.now()));
