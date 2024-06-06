@@ -22,7 +22,7 @@ class _TodayScreenState extends State<TodayScreen> {
   String checkOut = "--/--";
   @override
   void initState() {
-    // TODO: implement initState
+    
     print('hello');
     getRecord();
     super.initState();
