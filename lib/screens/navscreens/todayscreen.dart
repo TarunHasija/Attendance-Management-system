@@ -17,7 +17,7 @@ class TodayScreen extends StatefulWidget {
 }
 
 class _TodayScreenState extends State<TodayScreen> {
-  @override
+  
   String checkIn = "--/--";
   String checkOut = "--/--";
   @override
