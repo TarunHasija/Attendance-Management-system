@@ -34,7 +34,7 @@ class LoginInputBox extends StatelessWidget {
               iconColor: primary,
               labelText: hintText,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.0),
+                borderRadius: BorderRadius.circular(16.0),
               )),
         ),
       ),
