@@ -153,7 +153,7 @@ class _TodayScreenState extends State<TodayScreen> {
                           style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w300,
-                              fontFamily: 'Nexa'))
+                              fontFamily: 'Poppins'))
                     ]),
               )),
           StreamBuilder(
@@ -179,7 +179,7 @@ class _TodayScreenState extends State<TodayScreen> {
                         outerColor: Colors.white,
                         elevation: 5,
                         animationDuration: const Duration(milliseconds: 500),
-                        text: checkIn == '--/--'
+                        text: checkIn == '--:--'
                             ? "Slide to Check In"
                             : "Slide to Check out",
                         textStyle: TextStyle(
@@ -188,7 +188,7 @@ class _TodayScreenState extends State<TodayScreen> {
                         key: key,
                         onSubmit: () async {
 
-                          Timer(Duration(seconds: 1), (){
+                          Timer(const Duration(seconds: 1), (){
                             key.currentState!.reset();
                           });
 
