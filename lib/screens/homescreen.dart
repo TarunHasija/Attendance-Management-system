@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-int currentIndex = 1;
+int currentIndex = 0;
 String id = '';
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -36,7 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
         .collection('Employee')
         .where('id', isEqualTo: User.employeeId)
         .get();
-  }
+
+
+setState((){
+  User.id = snap.docs[0].id;
+  });}
 
   @override
   Widget build(BuildContext context) {
