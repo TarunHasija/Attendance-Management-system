@@ -23,7 +23,7 @@ class _TodayScreenState extends State<TodayScreen> {
   @override
   void initState() {
     
-    print('hello');
+
     getRecord();
     super.initState();
   }
@@ -32,11 +32,10 @@ class _TodayScreenState extends State<TodayScreen> {
     try {
       CollectionReference colref =
           FirebaseFirestore.instance.collection('Employee');
-      // print(DateFormat('hh:mm').format(DateTime.now()));
+
       QuerySnapshot snap =
           await colref.where('id', isEqualTo: User.employeeId).get();
-      // print(snap.docs[0].id);
-      // print(DateFormat('MMMM yyyy').format(DateTime.now()));
+
       DocumentSnapshot snap2 = await colref
           .doc(snap.docs[0].id)
           .collection('Record')
@@ -50,8 +49,7 @@ class _TodayScreenState extends State<TodayScreen> {
       String checkIn = "--/--";
       String checkOut = "--/--";
     }
-    print(checkIn);
-    print(checkOut);
+
   }
 
   @override
@@ -80,18 +78,50 @@ class _TodayScreenState extends State<TodayScreen> {
                   letterSpacing: 2, fontSize: deviceWidth(context) * .06),
             ),
           ),
+
+          Container(
+            margin: EdgeInsets.only(top: deviceHeight(context)/30),
+              alignment: Alignment.centerLeft,
+              child: RichText(
+                text: TextSpan(
+                    text: "${DateTime.now().day} ",
+                    style: TextStyle(
+                        color: primary, fontSize: deviceWidth(context) / 18),
+                    children: [
+                      TextSpan(
+                          text: DateFormat('MMMM yyyy').format(DateTime.now()),
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: 'Poppins'))
+                    ]),
+              )),
+          StreamBuilder(
+              stream: Stream.periodic(const Duration(seconds: 1)),
+              builder: (context, snapshot) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+
+                    DateFormat('hh:mm:ss a').format(DateTime.now()),
+                    style: TextStyle(
+                        fontSize: deviceWidth(context) / 20,
+                        color: Colors.black54),
+                  ),
+                );
+              }),
           Container(
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.only(top: 32),
             child: Text(
               "Today's Status",
               style: TextStyle(
-                  letterSpacing: 2, fontSize: deviceWidth(context) * .05),
+                  letterSpacing: 1.5, fontSize: deviceWidth(context) * .06),
             ),
           ),
           Container(
               alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.only(top: 12, bottom: 32),
+              margin: const EdgeInsets.only(top: 30, bottom: 32),
               height: deviceHeight(context) * .2,
               decoration: const BoxDecoration(
                   color: Colors.white,
@@ -141,35 +171,7 @@ class _TodayScreenState extends State<TodayScreen> {
                 ],
               ),
           ),
-          Container(
-              alignment: Alignment.centerLeft,
-              child: RichText(
-                text: TextSpan(
-                    text: "${DateTime.now().day} ",
-                    style: TextStyle(
-                        color: primary, fontSize: deviceWidth(context) / 18),
-                    children: [
-                      TextSpan(
-                          text: DateFormat('MMMM yyyy').format(DateTime.now()),
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'Poppins'))
-                    ]),
-              )),
-          StreamBuilder(
-              stream: Stream.periodic(const Duration(seconds: 1)),
-              builder: (context, snapshot) {
-                return Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "${DateFormat('hh:mm:ss a').format(DateTime.now())}",
-                    style: TextStyle(
-                        fontSize: deviceWidth(context) / 20,
-                        color: Colors.black54),
-                  ),
-                );
-              }),
+
           checkOut == '--/--'
               ? Container(
                   margin: EdgeInsets.only(top: deviceHeight(context) / 20),
@@ -202,13 +204,17 @@ class _TodayScreenState extends State<TodayScreen> {
                               .where('id', isEqualTo: User.employeeId)
                               .get();
                           print(snap.docs[0].id);
+
                           print(DateFormat('MMMM yyyy').format(DateTime.now()));
+
                           DocumentSnapshot snap2 = await colref
+
                               .doc(snap.docs[0].id)
                               .collection('Record')
                               .doc(DateFormat('dd MMMM yyyy')
                                   .format(DateTime.now()))
                               .get();
+                          print(snap.docs[0].id);
 
                           try {
                             String checkIn = snap2['checkIn'];
@@ -223,6 +229,7 @@ class _TodayScreenState extends State<TodayScreen> {
                                 .doc(DateFormat('dd MMMM yyyy')
                                     .format(DateTime.now()))
                                 .update({
+                              'date':Timestamp.now(),
                               'checkIn': checkIn,
                               'checkOut':
                                   DateFormat('hh:mm').format(DateTime.now()),
@@ -237,10 +244,11 @@ class _TodayScreenState extends State<TodayScreen> {
                                 .doc(DateFormat('dd MMMM yyyy')
                                     .format(DateTime.now()))
                                 .set({
+                              'date':Timestamp.now(),
                               'checkIn':
                                   DateFormat('hh:mm').format(DateTime.now()),
                               'checkOut':
-                                  DateFormat('hh:mm').format(DateTime.now())
+                                  "--/--"
 
                               // 'checkOut':checkOut
                             });

@@ -47,10 +47,10 @@ setState((){
     return Scaffold(
       body: IndexedStack(
         index: currentIndex,
-        children: const [
-          CalenderScreen(),
-          TodayScreen(),
-          ProfileScreen(),
+        children: [
+          new CalenderScreen(),
+          new TodayScreen(),
+          new ProfileScreen(),
         ],
       ),
       bottomNavigationBar: Container(
