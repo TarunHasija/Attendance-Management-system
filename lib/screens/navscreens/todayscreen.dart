@@ -139,7 +139,8 @@ class _TodayScreenState extends State<TodayScreen> {
                     ],
                   ))
                 ],
-              )),
+              ),
+          ),
           Container(
               alignment: Alignment.centerLeft,
               child: RichText(

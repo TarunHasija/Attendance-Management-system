@@ -66,10 +66,58 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     itemCount: snap.length,
                     itemBuilder: (context,index){
                       return Container(
-                        child: Text(
-                          snap[index]['checkIn']
+                        alignment: Alignment.centerLeft,
+                        margin: const EdgeInsets.only(top: 12, bottom: 22,left :6,right: 6),
+                        height: deviceHeight(context) * .15,
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 10,
+                                  offset: Offset(2, 2))
+                            ],
+                            borderRadius: BorderRadius.all(Radius.circular(20))),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Check in",
+                                      style: TextStyle(
+                                          fontSize: deviceWidth(context) / 20,
+                                          color: const Color.fromARGB(255, 83, 83, 83)),
+                                    ),
+                                    Text(
+                                      snap[index]['checkIn'],
+                                      style: TextStyle(fontSize: deviceWidth(context) / 18),
+                                    )
+                                  ],
+                                )),
+                            Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Check Out",
+                                      style: TextStyle(
+                                          fontSize: deviceWidth(context) / 20,
+                                          color: const Color.fromARGB(255, 83, 83, 83)),
+                                    ),
+                                    Text(
+                                      snap[index]['checkOut'],
+                                      style: TextStyle(fontSize: deviceWidth(context) / 18),
+                                    )
+                                  ],
+                                ))
+                          ],
                         ),
                       );
+
                     },
 
                     );
