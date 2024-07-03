@@ -18,12 +18,12 @@ class _CalenderScreenState extends State<CalenderScreen> {
   Widget build(BuildContext context) {
     return  Scaffold(
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(top: 32),
+              margin:const EdgeInsets.only(top: 32),
               child:Text(
                 "My Attendance"
                     ,style: TextStyle(
@@ -35,7 +35,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(top: 32),
+                  margin: const EdgeInsets.only(top: 32),
                   child:Text(
                     DateFormat("MMMM").format(DateTime.now())
                     ,style: TextStyle(
@@ -45,7 +45,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 ),
                 Container(
                   alignment: Alignment.centerRight,
-                  margin: EdgeInsets.only(top: 32),
+                  margin:const  EdgeInsets.only(top: 32),
                   child:Text(
                     "Pick a month"
                     ,style: TextStyle(
@@ -55,7 +55,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 ),
               ],
             ),
-            Container(
+            SizedBox(
               height: deviceHeight(context)- deviceHeight(context)/5,
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance.collection("Employee").doc(User.id).collection('Record').snapshots(),
