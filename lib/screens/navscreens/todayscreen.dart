@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'package:ams/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -17,13 +16,10 @@ class TodayScreen extends StatefulWidget {
 }
 
 class _TodayScreenState extends State<TodayScreen> {
-  
   String checkIn = "--/--";
   String checkOut = "--/--";
   @override
   void initState() {
-    
-
     getRecord();
     super.initState();
   }
@@ -49,7 +45,6 @@ class _TodayScreenState extends State<TodayScreen> {
       String checkIn = "--/--";
       String checkOut = "--/--";
     }
-
   }
 
   @override
@@ -78,9 +73,8 @@ class _TodayScreenState extends State<TodayScreen> {
                   letterSpacing: 2, fontSize: deviceWidth(context) * .06),
             ),
           ),
-
           Container(
-            margin: EdgeInsets.only(top: deviceHeight(context)/30),
+              margin: EdgeInsets.only(top: deviceHeight(context) / 30),
               alignment: Alignment.centerLeft,
               child: RichText(
                 text: TextSpan(
@@ -102,7 +96,6 @@ class _TodayScreenState extends State<TodayScreen> {
                 return Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-
                     DateFormat('hh:mm:ss a').format(DateTime.now()),
                     style: TextStyle(
                         fontSize: deviceWidth(context) / 20,
@@ -120,58 +113,57 @@ class _TodayScreenState extends State<TodayScreen> {
             ),
           ),
           Container(
-              alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.only(top: 30, bottom: 32),
-              height: deviceHeight(context) * .2,
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        offset: Offset(2, 2))
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Check in",
-                        style: TextStyle(
-                            fontSize: deviceWidth(context) / 20,
-                            color: const Color.fromARGB(255, 83, 83, 83)),
-                      ),
-                      Text(
-                        checkIn,
-                        style: TextStyle(fontSize: deviceWidth(context) / 18),
-                      )
-                    ],
-                  )),
-                  Expanded(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Check Out",
-                        style: TextStyle(
-                            fontSize: deviceWidth(context) / 20,
-                            color: const Color.fromARGB(255, 83, 83, 83)),
-                      ),
-                      Text(
-                        checkOut,
-                        style: TextStyle(fontSize: deviceWidth(context) / 18),
-                      )
-                    ],
-                  ))
+            alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.only(top: 30, bottom: 32),
+            height: deviceHeight(context) * .2,
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      offset: Offset(2, 2))
                 ],
-              ),
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Check in",
+                      style: TextStyle(
+                          fontSize: deviceWidth(context) / 20,
+                          color: const Color.fromARGB(255, 83, 83, 83)),
+                    ),
+                    Text(
+                      checkIn,
+                      style: TextStyle(fontSize: deviceWidth(context) / 18),
+                    )
+                  ],
+                )),
+                Expanded(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Check Out",
+                      style: TextStyle(
+                          fontSize: deviceWidth(context) / 20,
+                          color: const Color.fromARGB(255, 83, 83, 83)),
+                    ),
+                    Text(
+                      checkOut,
+                      style: TextStyle(fontSize: deviceWidth(context) / 18),
+                    )
+                  ],
+                ))
+              ],
+            ),
           ),
-
           checkOut == '--/--'
               ? Container(
                   margin: EdgeInsets.only(top: deviceHeight(context) / 20),
@@ -182,7 +174,7 @@ class _TodayScreenState extends State<TodayScreen> {
                         outerColor: Colors.white,
                         elevation: 5,
                         animationDuration: const Duration(milliseconds: 500),
-                        text: checkIn == '--:--'
+                        text: checkIn == '--/--'
                             ? "Slide to Check In"
                             : "Slide to Check out",
                         textStyle: TextStyle(
@@ -190,12 +182,9 @@ class _TodayScreenState extends State<TodayScreen> {
                             fontSize: deviceWidth(context) / 20),
                         key: key,
                         onSubmit: () async {
-
-                          Timer(const Duration(seconds: 1), (){
+                          Timer(const Duration(seconds: 1), () {
                             key.currentState!.reset();
                           });
-
-
 
                           CollectionReference colref =
                               FirebaseFirestore.instance.collection('Employee');
@@ -208,19 +197,19 @@ class _TodayScreenState extends State<TodayScreen> {
                           print(DateFormat('MMMM yyyy').format(DateTime.now()));
 
                           DocumentSnapshot snap2 = await colref
-
                               .doc(snap.docs[0].id)
                               .collection('Record')
                               .doc(DateFormat('dd MMMM yyyy')
                                   .format(DateTime.now()))
                               .get();
-                          print(snap.docs[0].id);
+
 
                           try {
                             String checkIn = snap2['checkIn'];
 
                             setState(() {
-                              checkOut = DateFormat('hh:mm').format(DateTime.now());
+                              checkOut =
+                                  DateFormat('hh:mm').format(DateTime.now());
                             });
 
                             await colref
@@ -229,14 +218,15 @@ class _TodayScreenState extends State<TodayScreen> {
                                 .doc(DateFormat('dd MMMM yyyy')
                                     .format(DateTime.now()))
                                 .update({
-                              'date':Timestamp.now(),
+                              'date': Timestamp.now(),
                               'checkIn': checkIn,
                               'checkOut':
                                   DateFormat('hh:mm').format(DateTime.now()),
                             });
                           } catch (e) {
                             setState(() {
-                              checkIn = DateFormat('hh:mm').format(DateTime.now());
+                              checkIn =
+                                  DateFormat('hh:mm').format(DateTime.now());
                             });
                             await colref
                                 .doc(snap.docs[0].id)
@@ -244,25 +234,28 @@ class _TodayScreenState extends State<TodayScreen> {
                                 .doc(DateFormat('dd MMMM yyyy')
                                     .format(DateTime.now()))
                                 .set({
-                              'date':Timestamp.now(),
+                              'date': Timestamp.now(),
                               'checkIn':
                                   DateFormat('hh:mm').format(DateTime.now()),
-                              'checkOut':
-                                  "--/--"
+                              'checkOut': "--/--"
 
                               // 'checkOut':checkOut
                             });
                             // await
                           }
-                        });
+                        }
+                        );
                   }),
                 )
               : Container(
-            margin: EdgeInsets.only(top: 32),
-                  child: Text("You Have completed the day!!",style: TextStyle(
-                    fontSize: deviceWidth(context)/20,
-                    color: Colors.black,
-                  ),),
+                  margin: EdgeInsets.only(top: 32),
+                  child: Text(
+                    "You Have completed the day!!",
+                    style: TextStyle(
+                      fontSize: deviceWidth(context) / 20,
+                      color: Colors.black,
+                    ),
+                  ),
                 )
         ],
       ),
