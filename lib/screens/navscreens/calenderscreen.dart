@@ -2,6 +2,7 @@ import 'package:ams/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 
 import '../../model/user.dart';
 
@@ -30,31 +31,37 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 32),
-                      child: Text(
+                Padding(
+                  padding: const EdgeInsets.only(top: 30.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
                         DateFormat("MMMM").format(DateTime.now()),
                         style: TextStyle(
                           fontSize: deviceWidth(context) / 18,
                         ),
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 32),
-                      child: Text(
-                        "Pick a month",
-                        style: TextStyle(
-                          fontSize: deviceWidth(context) / 18,
+                      GestureDetector(
+                        onTap: () async {
+                          final month = await showMonthYearPicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2024),
+                              lastDate: DateTime(2030));
+                        },
+                        child: Text(
+                          "Pick a month",
+                          style: TextStyle(
+                            fontSize: deviceWidth(context) / 18,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 SizedBox(
-                  height: deviceHeight(context) / 1.5,
+                  height: deviceHeight(context) / 1.3,
                   child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection("Employee")
@@ -73,10 +80,12 @@ class _CalenderScreenState extends State<CalenderScreen> {
                               return DateFormat('MMMM').format(
                                           snap[index]['date'].toDate()) ==
                                       "July"
-                                  ? Container(
+                                  ?
+                                  // --------------Calender Tile-------------
+                                  Container(
                                       alignment: Alignment.centerLeft,
                                       margin: const EdgeInsets.only(
-                                          bottom: 22, left: 6, right: 6),
+                                          bottom: 18, left: 6, right: 6),
                                       height: deviceHeight(context) * .17,
                                       decoration: const BoxDecoration(
                                           color: Colors.white,
@@ -104,7 +113,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                         Radius.circular(20))),
                                             child: Center(
                                               child: Text(
-                                                DateFormat('EE\ndd').format(
+                                                DateFormat('EE\n dd').format(
                                                     snap[index]['date']
                                                         .toDate()),
                                                 style: TextStyle(
@@ -128,7 +137,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                 style: TextStyle(
                                                     fontSize:
                                                         deviceWidth(context) /
-                                                            20,
+                                                            22,
                                                     color: const Color.fromARGB(
                                                         255, 83, 83, 83)),
                                               ),
@@ -137,7 +146,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                 style: TextStyle(
                                                     fontSize:
                                                         deviceWidth(context) /
-                                                            18),
+                                                            20),
                                               )
                                             ],
                                           )),
@@ -153,7 +162,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                 style: TextStyle(
                                                     fontSize:
                                                         deviceWidth(context) /
-                                                            20,
+                                                            22,
                                                     color: const Color.fromARGB(
                                                         255, 83, 83, 83)),
                                               ),
@@ -162,7 +171,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                 style: TextStyle(
                                                     fontSize:
                                                         deviceWidth(context) /
-                                                            18),
+                                                            20),
                                               )
                                             ],
                                           ))
