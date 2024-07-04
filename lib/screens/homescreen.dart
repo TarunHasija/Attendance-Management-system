@@ -48,9 +48,9 @@ setState((){
       body: IndexedStack(
         index: currentIndex,
         children: [
-          new CalenderScreen(),
-          new TodayScreen(),
-          new ProfileScreen(),
+           CalenderScreen(),
+           TodayScreen(),
+           ProfileScreen(),
         ],
       ),
       bottomNavigationBar: Container(
