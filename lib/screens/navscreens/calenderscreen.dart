@@ -14,6 +14,8 @@ class CalenderScreen extends StatefulWidget {
 }
 
 class _CalenderScreenState extends State<CalenderScreen> {
+
+  String _month = DateFormat('MMMM').format(DateTime.now());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +39,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        DateFormat("MMMM").format(DateTime.now()),
+                        _month,
                         style: TextStyle(
                           fontSize: deviceWidth(context) / 18,
                         ),
@@ -48,7 +50,30 @@ class _CalenderScreenState extends State<CalenderScreen> {
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime(2024),
-                              lastDate: DateTime(2030));
+                              lastDate: DateTime(2030),
+                            builder: (context,child){
+                                return Theme(data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: primary,
+                                    secondary: primary,
+                                    onSecondary: Colors.white,
+                                  ),
+                                  textButtonTheme:TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: primary,
+                                    )
+                                  ),
+                                  textTheme: const TextTheme(
+
+                                  ),
+                                ), child: child!, );
+                            }
+                          );
+                          if(month!=null){
+                            setState(() {
+                            _month =  DateFormat("MMMM").format(month);
+                            });
+                          }
                         },
                         child: Text(
                           "Pick a month",
@@ -79,12 +104,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
                               //Todo : change July to the month which we will pick to see
                               return DateFormat('MMMM').format(
                                           snap[index]['date'].toDate()) ==
-                                      "July"
+                                      _month
                                   ?
                                   // --------------Calender Tile-------------
                                   Container(
                                       alignment: Alignment.centerLeft,
-                                      margin: const EdgeInsets.only(
+                                      margin:  EdgeInsets.only(
+                                        top: index > 0 ? 12:0 ,
                                           bottom: 18, left: 6, right: 6),
                                       height: deviceHeight(context) * .17,
                                       decoration: const BoxDecoration(

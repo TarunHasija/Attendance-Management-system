@@ -42,8 +42,8 @@ class _TodayScreenState extends State<TodayScreen> {
         checkOut = snap2['checkOut'];
       });
     } catch (e) {
-      String checkIn = "--/--";
-      String checkOut = "--/--";
+       checkIn = "--/--";
+       checkOut = "--/--";
     }
   }
 
