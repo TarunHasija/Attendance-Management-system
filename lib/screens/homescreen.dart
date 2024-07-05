@@ -2,9 +2,11 @@ import 'package:ams/constant.dart';
 import 'package:ams/screens/navscreens/calenderscreen.dart';
 import 'package:ams/screens/navscreens/profilescreen.dart';
 import 'package:ams/screens/navscreens/todayscreen.dart';
+import 'package:ams/services/location_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ams/services/location_service.dart';
 
 import '../model/user.dart';
 
@@ -26,9 +28,25 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   @override
   void initState() {
-    
     super.initState();
+    _startLocationService();
     getId();
+  }
+
+  void _startLocationService() async {
+    LocationService().initialize();
+
+    LocationService().getLongitute().then((value) {
+      setState(() {
+        User.long = value!;
+      });
+
+      LocationService().getLatitude().then((value) {
+        setState(() {
+          User.lat = value!;
+        });
+      });
+    });
   }
 
   void getId() async {
@@ -37,20 +55,20 @@ class _HomeScreenState extends State<HomeScreen> {
         .where('id', isEqualTo: User.employeeId)
         .get();
 
-
-setState((){
-  User.id = snap.docs[0].id;
-  });}
+    setState(() {
+      User.id = snap.docs[0].id;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
         index: currentIndex,
-        children: [
-           CalenderScreen(),
-           TodayScreen(),
-           ProfileScreen(),
+        children: const [
+          CalenderScreen(),
+          TodayScreen(),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: Container(

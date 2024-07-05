@@ -101,7 +101,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                             physics: const BouncingScrollPhysics(),
                             itemCount: snap.length,
                             itemBuilder: (context, index) {
-                              //Todo : change July to the month which we will pick to see
                               return DateFormat('MMMM').format(
                                           snap[index]['date'].toDate()) ==
                                       _month
@@ -139,7 +138,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                         Radius.circular(20))),
                                             child: Center(
                                               child: Text(
-                                                DateFormat('EE\n dd').format(
+                                                DateFormat('EE\n  dd').format(
                                                     snap[index]['date']
                                                         .toDate()),
                                                 style: TextStyle(
@@ -163,7 +162,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                 style: TextStyle(
                                                     fontSize:
                                                         deviceWidth(context) /
-                                                            22,
+                                                            25,
                                                     color: const Color.fromARGB(
                                                         255, 83, 83, 83)),
                                               ),
@@ -188,7 +187,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                 style: TextStyle(
                                                     fontSize:
                                                         deviceWidth(context) /
-                                                            22,
+                                                            25,
                                                     color: const Color.fromARGB(
                                                         255, 83, 83, 83)),
                                               ),

@@ -18,10 +18,16 @@ class TodayScreen extends StatefulWidget {
 class _TodayScreenState extends State<TodayScreen> {
   String checkIn = "--/--";
   String checkOut = "--/--";
+
+  String location = " " ;
   @override
   void initState() {
-    getRecord();
     super.initState();
+    getRecord();
+  }
+
+  void _getLocation()async{
+    
   }
 
   getRecord() async {
@@ -42,8 +48,8 @@ class _TodayScreenState extends State<TodayScreen> {
         checkOut = snap2['checkOut'];
       });
     } catch (e) {
-       checkIn = "--/--";
-       checkOut = "--/--";
+      checkIn = "--/--";
+      checkOut = "--/--";
     }
   }
 
@@ -203,7 +209,6 @@ class _TodayScreenState extends State<TodayScreen> {
                                   .format(DateTime.now()))
                               .get();
 
-
                           try {
                             String checkIn = snap2['checkIn'];
 
@@ -243,8 +248,7 @@ class _TodayScreenState extends State<TodayScreen> {
                             });
                             // await
                           }
-                        }
-                        );
+                        });
                   }),
                 )
               : Container(
