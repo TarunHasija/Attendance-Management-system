@@ -16,13 +16,13 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-int currentIndex = 0;
+int currentIndex = 2;
 String id = '';
 
 class _HomeScreenState extends State<HomeScreen> {
   List<IconData> navigationIcons = [
-    FontAwesomeIcons.calendar,
     FontAwesomeIcons.check,
+    FontAwesomeIcons.calendar,
     FontAwesomeIcons.user,
   ];
   @override
@@ -65,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(
         index: currentIndex,
         children: const [
-          CalenderScreen(),
           TodayScreen(),
+          CalenderScreen(),
           ProfileScreen(),
         ],
       ),

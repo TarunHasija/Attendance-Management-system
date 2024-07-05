@@ -195,8 +195,6 @@ class _TodayScreenState extends State<TodayScreen> {
                             fontSize: deviceWidth(context) / 20),
                         key: key,
                         onSubmit: () async {
-                        
-
                           CollectionReference colref =
                               FirebaseFirestore.instance.collection('Employee');
                           if (User.lat != 0) {
@@ -204,8 +202,6 @@ class _TodayScreenState extends State<TodayScreen> {
                             QuerySnapshot snap = await colref
                                 .where('id', isEqualTo: User.employeeId)
                                 .get();
-                           
-
 
                             DocumentSnapshot snap2 = await colref
                                 .doc(snap.docs[0].id)
@@ -232,7 +228,7 @@ class _TodayScreenState extends State<TodayScreen> {
                                 'checkIn': checkIn,
                                 'checkOut':
                                     DateFormat('hh:mm').format(DateTime.now()),
-                                'location': location,
+                                'checkInLocation': location,
                               });
                             } catch (e) {
                               setState(() {
@@ -249,21 +245,20 @@ class _TodayScreenState extends State<TodayScreen> {
                                 'checkIn':
                                     DateFormat('hh:mm').format(DateTime.now()),
                                 'checkOut': "--/--",
-                                'location': location,
+                                'checkOutLocation': location,
 
                                 // 'checkOut':checkOut
                               });
                               // await
                             }
-                            
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-  if (key.currentState != null) {
-    key.currentState!.reset();
-  }
-});
-                            
+
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (key.currentState != null) {
+                                key.currentState?.reset();
+                              }
+                            });
                           } else {
-                            Timer(Duration(seconds: 3), () async {
+                            Timer(const Duration(seconds: 3), () async {
                               _getLocation();
                               QuerySnapshot snap = await colref
                                   .where('id', isEqualTo: User.employeeId)
@@ -298,7 +293,7 @@ class _TodayScreenState extends State<TodayScreen> {
                                   'checkIn': checkIn,
                                   'checkOut': DateFormat('hh:mm')
                                       .format(DateTime.now()),
-                                  'location': location,
+                                  'checkInLocation': location,
                                 });
                               } catch (e) {
                                 setState(() {
@@ -315,24 +310,24 @@ class _TodayScreenState extends State<TodayScreen> {
                                   'checkIn': DateFormat('hh:mm')
                                       .format(DateTime.now()),
                                   'checkOut': "--/--",
-                                  'location': location,
+                                  'checkOutLocation': location,
 
                                   // 'checkOut':checkOut
                                 });
                                 // await
                               }
                               WidgetsBinding.instance.addPostFrameCallback((_) {
-  if (key.currentState != null) {
-    key.currentState!.reset();
-  }
-});
+                                if (key.currentState != null) {
+                                  key.currentState?.reset();
+                                }
+                              });
                             });
                           }
                         });
                   }),
                 )
               : Container(
-                  margin: EdgeInsets.only(top: 32),
+                  margin: const EdgeInsets.only(top: 32),
                   child: Text(
                     "You Have completed the day!!",
                     style: TextStyle(
@@ -341,7 +336,8 @@ class _TodayScreenState extends State<TodayScreen> {
                     ),
                   ),
                 ),
-          location != " " ? Text("Location :" + location) : const SizedBox()
+          // location != " " ? Text("Location :$location") : const SizedBox()
+
         ],
       ),
     ));

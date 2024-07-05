@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ams/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +16,41 @@ class CalenderScreen extends StatefulWidget {
 }
 
 class _CalenderScreenState extends State<CalenderScreen> {
-
+  StreamController<QuerySnapshot> _streamController =
+      StreamController<QuerySnapshot>.broadcast();
   String _month = DateFormat('MMMM').format(DateTime.now());
+  void _refreshData() {
+    _streamController.close();
+    _streamController = StreamController<QuerySnapshot>.broadcast();
+    FirebaseFirestore.instance
+        .collection("Employee")
+        .doc(User.id)
+        .collection("Record")
+        .snapshots()
+        .listen((snapshot) {
+      _streamController.add(snapshot);
+    });
+    setState(() {});
+  }
+
   @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _refreshData();
+          },
+          tooltip: 'Refresh',
+          backgroundColor: primary,
+          child: const Icon(Icons.refresh_rounded,color: Colors.white,),
+        ),
         body: SingleChildScrollView(
-          
-            padding: const EdgeInsets.only(top:20,left: 20,right: 20),
+            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
             child: Column(
               children: [
                 Container(
@@ -52,27 +81,26 @@ class _CalenderScreenState extends State<CalenderScreen> {
                               initialDate: DateTime.now(),
                               firstDate: DateTime(2024),
                               lastDate: DateTime(2030),
-                            builder: (context,child){
-                                return Theme(data: Theme.of(context).copyWith(
-                                  colorScheme: ColorScheme.light(
-                                    primary: primary,
-                                    secondary: primary,
-                                    onSecondary: Colors.white,
-                                  ),
-                                  textButtonTheme:TextButtonThemeData(
-                                    style: TextButton.styleFrom(
+                              builder: (context, child) {
+                                return Theme(
+                                  data: Theme.of(context).copyWith(
+                                    colorScheme: ColorScheme.light(
+                                      primary: primary,
+                                      secondary: primary,
+                                      onSecondary: Colors.white,
+                                    ),
+                                    textButtonTheme: TextButtonThemeData(
+                                        style: TextButton.styleFrom(
                                       foregroundColor: primary,
-                                    )
+                                    )),
+                                    textTheme: const TextTheme(),
                                   ),
-                                  textTheme: const TextTheme(
-
-                                  ),
-                                ), child: child!, );
-                            }
-                          );
-                          if(month!=null){
+                                  child: child!,
+                                );
+                              });
+                          if (month != null) {
                             setState(() {
-                            _month =  DateFormat("MMMM").format(month);
+                              _month = DateFormat("MMMM").format(month);
                             });
                           }
                         },
@@ -89,11 +117,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 SizedBox(
                   height: deviceHeight(context) / 1.4,
                   child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection("Employee")
-                          .doc(User.id)
-                          .collection('Record')
-                          .snapshots(),
+                      stream: _streamController.stream,
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasData) {
@@ -106,12 +130,14 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                           snap[index]['date'].toDate()) ==
                                       _month
                                   ?
-                                  // --------------Calender Tile-------------
+                        // --------------Calender Tile-------------
                                   Container(
                                       alignment: Alignment.centerLeft,
-                                      margin:  EdgeInsets.only(
-                                        top: index > 0 ? 12:0 ,
-                                          bottom: 18, left: 6, right: 6),
+                                      margin: EdgeInsets.only(
+                                          top: index > 0 ? 12 : 0,
+                                          bottom: 18,
+                                          left: 6,
+                                          right: 6),
                                       height: deviceHeight(context) * .17,
                                       decoration: const BoxDecoration(
                                           color: Colors.white,
@@ -134,9 +160,16 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                             margin: const EdgeInsets.only(),
                                             decoration: BoxDecoration(
                                                 color: primary,
+                                                border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 10
+                                                ),
                                                 borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(20))),
+                                                    const BorderRadius.only(
+
+                                                      topLeft:   Radius.circular(20),
+                                                      bottomLeft: Radius.circular(20)
+                                                    ),),
                                             child: Center(
                                               child: Text(
                                                 DateFormat('EE\n  dd').format(
