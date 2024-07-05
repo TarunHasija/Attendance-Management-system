@@ -266,7 +266,9 @@ class _TodayScreenState extends State<TodayScreen> {
                       color: Colors.black,
                     ),
                   ),
-                )
+                ),
+
+                location != " "? Text("Location :"+ location):const SizedBox()
         ],
       ),
     ));
