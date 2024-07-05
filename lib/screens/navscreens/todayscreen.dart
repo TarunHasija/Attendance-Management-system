@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ams/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
@@ -27,7 +28,7 @@ class _TodayScreenState extends State<TodayScreen> {
   }
 
   void _getLocation()async{
-    
+   List<Placemark> placeMark = await 
   }
 
   getRecord() async {
