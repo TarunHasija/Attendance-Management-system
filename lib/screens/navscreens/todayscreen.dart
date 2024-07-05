@@ -20,15 +20,20 @@ class _TodayScreenState extends State<TodayScreen> {
   String checkIn = "--/--";
   String checkOut = "--/--";
 
-  String location = " " ;
+  String location = " ";
   @override
   void initState() {
     super.initState();
     getRecord();
   }
 
-  void _getLocation()async{
-   List<Placemark> placeMark = await 
+  void _getLocation() async {
+    List<Placemark> placeMark =
+        await placemarkFromCoordinates(User.lat, User.long);
+
+    setState(() {
+      location = "${placeMark[0].street} , ${placeMark[0].administrativeArea} , ${placeMark[0].postalCode} , ${placeMark[0].country}";
+    });
   }
 
   getRecord() async {
