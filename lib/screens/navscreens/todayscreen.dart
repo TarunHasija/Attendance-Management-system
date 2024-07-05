@@ -32,7 +32,8 @@ class _TodayScreenState extends State<TodayScreen> {
         await placemarkFromCoordinates(User.lat, User.long);
 
     setState(() {
-      location = "${placeMark[0].street} , ${placeMark[0].administrativeArea} , ${placeMark[0].postalCode} , ${placeMark[0].country}";
+      location =
+          "${placeMark[0].street} , ${placeMark[0].administrativeArea} , ${placeMark[0].postalCode} , ${placeMark[0].country}";
     });
   }
 
@@ -194,65 +195,138 @@ class _TodayScreenState extends State<TodayScreen> {
                             fontSize: deviceWidth(context) / 20),
                         key: key,
                         onSubmit: () async {
-                          Timer(const Duration(seconds: 1), () {
-                            key.currentState!.reset();
-                          });
+                        
 
                           CollectionReference colref =
                               FirebaseFirestore.instance.collection('Employee');
-                          print(DateFormat('hh:mm').format(DateTime.now()));
-                          QuerySnapshot snap = await colref
-                              .where('id', isEqualTo: User.employeeId)
-                              .get();
-                          print(snap.docs[0].id);
+                          if (User.lat != 0) {
+                            _getLocation();
+                            QuerySnapshot snap = await colref
+                                .where('id', isEqualTo: User.employeeId)
+                                .get();
+                           
 
-                          print(DateFormat('MMMM yyyy').format(DateTime.now()));
 
-                          DocumentSnapshot snap2 = await colref
-                              .doc(snap.docs[0].id)
-                              .collection('Record')
-                              .doc(DateFormat('dd MMMM yyyy')
-                                  .format(DateTime.now()))
-                              .get();
-
-                          try {
-                            String checkIn = snap2['checkIn'];
-
-                            setState(() {
-                              checkOut =
-                                  DateFormat('hh:mm').format(DateTime.now());
-                            });
-
-                            await colref
+                            DocumentSnapshot snap2 = await colref
                                 .doc(snap.docs[0].id)
-                                .collection("Record")
+                                .collection('Record')
                                 .doc(DateFormat('dd MMMM yyyy')
                                     .format(DateTime.now()))
-                                .update({
-                              'date': Timestamp.now(),
-                              'checkIn': checkIn,
-                              'checkOut':
-                                  DateFormat('hh:mm').format(DateTime.now()),
-                            });
-                          } catch (e) {
-                            setState(() {
-                              checkIn =
-                                  DateFormat('hh:mm').format(DateTime.now());
-                            });
-                            await colref
-                                .doc(snap.docs[0].id)
-                                .collection("Record")
-                                .doc(DateFormat('dd MMMM yyyy')
-                                    .format(DateTime.now()))
-                                .set({
-                              'date': Timestamp.now(),
-                              'checkIn':
-                                  DateFormat('hh:mm').format(DateTime.now()),
-                              'checkOut': "--/--"
+                                .get();
 
-                              // 'checkOut':checkOut
+                            try {
+                              String checkIn = snap2['checkIn'];
+
+                              setState(() {
+                                checkOut =
+                                    DateFormat('hh:mm').format(DateTime.now());
+                              });
+
+                              await colref
+                                  .doc(snap.docs[0].id)
+                                  .collection("Record")
+                                  .doc(DateFormat('dd MMMM yyyy')
+                                      .format(DateTime.now()))
+                                  .update({
+                                'date': Timestamp.now(),
+                                'checkIn': checkIn,
+                                'checkOut':
+                                    DateFormat('hh:mm').format(DateTime.now()),
+                                'location': location,
+                              });
+                            } catch (e) {
+                              setState(() {
+                                checkIn =
+                                    DateFormat('hh:mm').format(DateTime.now());
+                              });
+                              await colref
+                                  .doc(snap.docs[0].id)
+                                  .collection("Record")
+                                  .doc(DateFormat('dd MMMM yyyy')
+                                      .format(DateTime.now()))
+                                  .set({
+                                'date': Timestamp.now(),
+                                'checkIn':
+                                    DateFormat('hh:mm').format(DateTime.now()),
+                                'checkOut': "--/--",
+                                'location': location,
+
+                                // 'checkOut':checkOut
+                              });
+                              // await
+                            }
+                            
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+  if (key.currentState != null) {
+    key.currentState!.reset();
+  }
+});
+                            
+                          } else {
+                            Timer(Duration(seconds: 3), () async {
+                              _getLocation();
+                              QuerySnapshot snap = await colref
+                                  .where('id', isEqualTo: User.employeeId)
+                                  .get();
+                              print(snap.docs[0].id);
+
+                              print(DateFormat('MMMM yyyy')
+                                  .format(DateTime.now()));
+
+                              DocumentSnapshot snap2 = await colref
+                                  .doc(snap.docs[0].id)
+                                  .collection('Record')
+                                  .doc(DateFormat('dd MMMM yyyy')
+                                      .format(DateTime.now()))
+                                  .get();
+
+                              try {
+                                String checkIn = snap2['checkIn'];
+
+                                setState(() {
+                                  checkOut = DateFormat('hh:mm')
+                                      .format(DateTime.now());
+                                });
+
+                                await colref
+                                    .doc(snap.docs[0].id)
+                                    .collection("Record")
+                                    .doc(DateFormat('dd MMMM yyyy')
+                                        .format(DateTime.now()))
+                                    .update({
+                                  'date': Timestamp.now(),
+                                  'checkIn': checkIn,
+                                  'checkOut': DateFormat('hh:mm')
+                                      .format(DateTime.now()),
+                                  'location': location,
+                                });
+                              } catch (e) {
+                                setState(() {
+                                  checkIn = DateFormat('hh:mm')
+                                      .format(DateTime.now());
+                                });
+                                await colref
+                                    .doc(snap.docs[0].id)
+                                    .collection("Record")
+                                    .doc(DateFormat('dd MMMM yyyy')
+                                        .format(DateTime.now()))
+                                    .set({
+                                  'date': Timestamp.now(),
+                                  'checkIn': DateFormat('hh:mm')
+                                      .format(DateTime.now()),
+                                  'checkOut': "--/--",
+                                  'location': location,
+
+                                  // 'checkOut':checkOut
+                                });
+                                // await
+                              }
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+  if (key.currentState != null) {
+    key.currentState!.reset();
+  }
+});
                             });
-                            // await
                           }
                         });
                   }),
@@ -267,8 +341,7 @@ class _TodayScreenState extends State<TodayScreen> {
                     ),
                   ),
                 ),
-
-                location != " "? Text("Location :"+ location):const SizedBox()
+          location != " " ? Text("Location :" + location) : const SizedBox()
         ],
       ),
     ));

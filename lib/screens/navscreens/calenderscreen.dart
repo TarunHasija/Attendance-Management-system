@@ -20,7 +20,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+          
+            padding: const EdgeInsets.only(top:20,left: 20,right: 20),
             child: Column(
               children: [
                 Container(
@@ -86,7 +87,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: deviceHeight(context) / 1.3,
+                  height: deviceHeight(context) / 1.4,
                   child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection("Employee")
