@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:ams/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:slide_to_act/slide_to_act.dart';
@@ -19,12 +21,36 @@ class TodayScreen extends StatefulWidget {
 class _TodayScreenState extends State<TodayScreen> {
   String checkIn = "--/--";
   String checkOut = "--/--";
-
   String location = " ";
+  String scanResult = " ";
+  String officeCode = " ";
   @override
   void initState() {
     super.initState();
-    getRecord();
+    _getRecord();
+    _getOfficeCode();
+  }
+
+  void _getOfficeCode()async{
+    DocumentSnapshot snap = await FirebaseFirestore.instance.
+    collection("Attributes").doc("Office1").get();
+    setState(() {
+      officeCode = snap['code'];
+    });
+  }
+
+  Future<void> scanQR() async {
+    String result = " ";
+    try {
+      result = await FlutterBarcodeScanner.scanBarcode(
+          "#ffffff", "cancel", false, ScanMode.QR);
+    } catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      scanResult = result;
+    });
   }
 
   void _getLocation() async {
@@ -37,11 +63,13 @@ class _TodayScreenState extends State<TodayScreen> {
     });
   }
 
-  getRecord() async {
+  _getRecord() async {
     try {
-      CollectionReference colref = FirebaseFirestore.instance.collection('Employee');
+      CollectionReference colref =
+          FirebaseFirestore.instance.collection('Employee');
 
-      QuerySnapshot snap = await colref.where('id', isEqualTo: User.employeeId).get();
+      QuerySnapshot snap =
+          await colref.where('id', isEqualTo: User.employeeId).get();
 
       if (snap.docs.isNotEmpty) {
         DocumentSnapshot snap2 = await colref
@@ -68,7 +96,6 @@ class _TodayScreenState extends State<TodayScreen> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +216,7 @@ class _TodayScreenState extends State<TodayScreen> {
           ),
           checkOut == '--/--'
               ? Container(
-                  margin: EdgeInsets.only(top: deviceHeight(context) / 20),
+                  margin: EdgeInsets.only(top: deviceHeight(context) / 50,bottom: deviceHeight(context)*0.04),
                   child: Builder(builder: (context) {
                     final GlobalKey<SlideActionState> key = GlobalKey();
                     return SlideAction(
@@ -205,46 +232,56 @@ class _TodayScreenState extends State<TodayScreen> {
                             fontSize: deviceWidth(context) / 20),
                         key: key,
                         onSubmit: () async {
-                          CollectionReference colref = FirebaseFirestore.instance.collection('Employee');
+                          CollectionReference colref =
+                              FirebaseFirestore.instance.collection('Employee');
                           if (User.lat != 0) {
                             _getLocation();
-                            QuerySnapshot snap = await colref.where('id', isEqualTo: User.employeeId).get();
+                            QuerySnapshot snap = await colref
+                                .where('id', isEqualTo: User.employeeId)
+                                .get();
 
                             if (snap.docs.isNotEmpty) {
                               DocumentSnapshot snap2 = await colref
                                   .doc(snap.docs[0].id)
                                   .collection('Record')
-                                  .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+                                  .doc(DateFormat('dd MMMM yyyy')
+                                      .format(DateTime.now()))
                                   .get();
 
                               try {
                                 String checkIn = snap2['checkIn'];
 
                                 setState(() {
-                                  checkOut = DateFormat('hh:mm').format(DateTime.now());
+                                  checkOut = DateFormat('hh:mm')
+                                      .format(DateTime.now());
                                 });
 
                                 await colref
                                     .doc(snap.docs[0].id)
                                     .collection("Record")
-                                    .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+                                    .doc(DateFormat('dd MMMM yyyy')
+                                        .format(DateTime.now()))
                                     .update({
                                   'date': Timestamp.now(),
                                   'checkIn': checkIn,
-                                  'checkOut': DateFormat('hh:mm').format(DateTime.now()),
+                                  'checkOut': DateFormat('hh:mm')
+                                      .format(DateTime.now()),
                                   'checkInLocation': location,
                                 });
                               } catch (e) {
                                 setState(() {
-                                  checkIn = DateFormat('hh:mm').format(DateTime.now());
+                                  checkIn = DateFormat('hh:mm')
+                                      .format(DateTime.now());
                                 });
                                 await colref
                                     .doc(snap.docs[0].id)
                                     .collection("Record")
-                                    .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+                                    .doc(DateFormat('dd MMMM yyyy')
+                                        .format(DateTime.now()))
                                     .set({
                                   'date': Timestamp.now(),
-                                  'checkIn': DateFormat('hh:mm').format(DateTime.now()),
+                                  'checkIn': DateFormat('hh:mm')
+                                      .format(DateTime.now()),
                                   'checkOut': "--/--",
                                   'checkOutLocation': location,
                                 });
@@ -261,49 +298,59 @@ class _TodayScreenState extends State<TodayScreen> {
                           } else {
                             Timer(const Duration(seconds: 3), () async {
                               _getLocation();
-                              QuerySnapshot snap = await colref.where('id', isEqualTo: User.employeeId).get();
+                              QuerySnapshot snap = await colref
+                                  .where('id', isEqualTo: User.employeeId)
+                                  .get();
 
                               if (snap.docs.isNotEmpty) {
                                 DocumentSnapshot snap2 = await colref
                                     .doc(snap.docs[0].id)
                                     .collection('Record')
-                                    .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+                                    .doc(DateFormat('dd MMMM yyyy')
+                                        .format(DateTime.now()))
                                     .get();
 
                                 try {
                                   String checkIn = snap2['checkIn'];
 
                                   setState(() {
-                                    checkOut = DateFormat('hh:mm').format(DateTime.now());
+                                    checkOut = DateFormat('hh:mm')
+                                        .format(DateTime.now());
                                   });
 
                                   await colref
                                       .doc(snap.docs[0].id)
                                       .collection("Record")
-                                      .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+                                      .doc(DateFormat('dd MMMM yyyy')
+                                          .format(DateTime.now()))
                                       .update({
                                     'date': Timestamp.now(),
                                     'checkIn': checkIn,
-                                    'checkOut': DateFormat('hh:mm').format(DateTime.now()),
+                                    'checkOut': DateFormat('hh:mm')
+                                        .format(DateTime.now()),
                                     'checkInLocation': location,
                                   });
                                 } catch (e) {
                                   setState(() {
-                                    checkIn = DateFormat('hh:mm').format(DateTime.now());
+                                    checkIn = DateFormat('hh:mm')
+                                        .format(DateTime.now());
                                   });
                                   await colref
                                       .doc(snap.docs[0].id)
                                       .collection("Record")
-                                      .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+                                      .doc(DateFormat('dd MMMM yyyy')
+                                          .format(DateTime.now()))
                                       .set({
                                     'date': Timestamp.now(),
-                                    'checkIn': DateFormat('hh:mm').format(DateTime.now()),
+                                    'checkIn': DateFormat('hh:mm')
+                                        .format(DateTime.now()),
                                     'checkOut': "--/--",
                                     'checkOutLocation': location,
                                   });
                                 }
 
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
                                   if (key.currentState != null) {
                                     key.currentState?.reset();
                                   }
@@ -313,12 +360,11 @@ class _TodayScreenState extends State<TodayScreen> {
                               }
                             });
                           }
-                        }
-                    );
+                        });
                   }),
                 )
               : Container(
-                  margin: const EdgeInsets.only(top: 32),
+                  margin: const EdgeInsets.only(top: 10, bottom: 20),
                   child: Text(
                     "You Have completed the day!!",
                     style: TextStyle(
@@ -327,8 +373,71 @@ class _TodayScreenState extends State<TodayScreen> {
                     ),
                   ),
                 ),
-          // location != " " ? Text("Location :$location") : const SizedBox()
+          location != " "
+              ? Center(
+                  child: Container(
+                      // width: double.infinity,
+                      height: deviceHeight(context) * 0.1,
+                      decoration: const BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 10,
+                                offset: Offset(2, 2))
+                          ],
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(child: Text("Location :$location",)),
+                          ],
+                        ),
+                      )),
+                )
+              : const SizedBox(),
 
+          GestureDetector(
+            onTap: (){
+              scanQR();
+            },
+            child: Container(
+              height: deviceWidth(context)/2.5,
+              width: deviceWidth(context)/2.5,
+              decoration:  const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(2, 2))
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.qr_code_scanner_rounded,
+                  size: deviceWidth(context)*0.15,
+                  color: primary,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      "Scan to\nCheck In",
+                      style: TextStyle(
+                        fontSize: deviceWidth(context)/24,
+                        color: Colors.black54
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     ));

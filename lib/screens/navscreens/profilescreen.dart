@@ -96,45 +96,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(
               height: 50,
             ),
-            User.canEdit ? textField("First Name", "First Name", firstNameController):field(User.firstName,"First Name"),
-            User.canEdit ? textField("Last Name", "Last Name", lastNameController):field(User.lastName,"Last Name"),
+            User.canEdit
+                ? textField("First Name", "First Name", firstNameController)
+                : field(User.firstName, "First Name"),
+            User.canEdit
+                ? textField("Last Name", "Last Name", lastNameController)
+                : field(User.lastName, "Last Name"),
 
             //------------Date of Birth Field--------------------
 
-            User.canEdit?GestureDetector(
-              onTap: () => {
-                showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1950),
-                    lastDate: DateTime.now(),
-                    builder: (context, child) {
-                      return Theme(
-                        data: Theme.of(context).copyWith(
-                          colorScheme: ColorScheme.light(
-                            primary: primary,
-                            secondary: primary,
-                            onSecondary: Colors.white,
-                          ),
-                          textButtonTheme: TextButtonThemeData(
-                              style: TextButton.styleFrom(
-                            foregroundColor: primary,
-                          )),
-                          textTheme: const TextTheme(),
-                        ),
-                        child: child!,
-                      );
-                    }).then((value) {
-                  setState(() {
-                    birth = DateFormat("MM/dd/yyyy").format(value!);
-                  });
-                }),
-              },
-              child: field(birth, "Date of Birth"),
-            ):field(User.birthDate,"Date Of Birth"),
+            User.canEdit
+                ? GestureDetector(
+                    onTap: () => {
+                      showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1950),
+                          lastDate: DateTime.now(),
+                          builder: (context, child) {
+                            return Theme(
+                              data: Theme.of(context).copyWith(
+                                colorScheme: ColorScheme.light(
+                                  primary: primary,
+                                  secondary: primary,
+                                  onSecondary: Colors.white,
+                                ),
+                                textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                  foregroundColor: primary,
+                                )),
+                                textTheme: const TextTheme(),
+                              ),
+                              child: child!,
+                            );
+                          }).then((value) {
+                        setState(() {
+                          birth = DateFormat("MM/dd/yyyy").format(value!);
+                        });
+                      }),
+                    },
+                    child: field(birth, "Date of Birth"),
+                  )
+                : field(User.birthDate, "Date Of Birth"),
 
             // -------------Date of Birth Field end------------------------
-            User.canEdit ? textField("Address", "Address", addressController):field( User.address,"Address"),
+            User.canEdit
+                ? textField("Address", "Address", addressController)
+                : field(User.address, "Address"),
 
             //--------------Save Button -----------------------------------
             User.canEdit
@@ -144,11 +152,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       String lastName = lastNameController.text;
                       String address = addressController.text;
                       String birthDate = birth;
-
-                      DocumentReference docRef = FirebaseFirestore.instance
-                          .collection("Employee")
-                          .doc(User.id);
-                      DocumentSnapshot docSnapshot = await docRef.get();
 
                       if (User.canEdit) {
                         if (firstName.isEmpty) {
