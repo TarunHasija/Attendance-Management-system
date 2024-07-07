@@ -1,10 +1,11 @@
-import 'dart:js_interop';
+import 'dart:io';
 
 import 'package:ams/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
 import '../../model/user.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -18,8 +19,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String birth = "Date of Birth";
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
-  TextEditingController birthDateController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+
+  void pickUploadProfilePic() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 90,
+    );
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("${User.employeeId.toLowerCase()}_profilepic.jpg");
+
+    await ref.putFile(File(image!.path));
+
+    ref.getDownloadURL().then((value){
+      setState(() {
+       User.profilePicLink = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,20 +48,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Container(
-              margin: const EdgeInsets.only(top: 80, bottom: 20),
-              height: 120,
-              width: 120,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: primary,
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.person,
-                  size: deviceHeight(context) / 15,
-                  color: Colors.white,
+            GestureDetector(
+              onTap: (){
+                pickUploadProfilePic();
+              },
+              child: Container(
+                margin: const EdgeInsets.only(top: 80, bottom: 20),
+                height: 120,
+                width: 120,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: primary,
+                ),
+                child: Center(
+                  child: User.profilePicLink == " " ? Icon(
+                    Icons.person,
+                    size: deviceHeight(context) / 15,
+                    color: Colors.white,
+                  ):Image.network(User.profilePicLink),
                 ),
               ),
             ),
@@ -126,33 +151,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
             //--------------Save Button -----------------------------------
             GestureDetector(
               onTap: () async {
+
                 String firstName = firstNameController.text;
                 String lastName = lastNameController.text;
                 String address = addressController.text;
                 String birthDate = birth;
 
-               if(User.canEdit){
-                 if (firstName.isEmpty) {
-                   showSnackBar("Please enter first name");
-                 } else if (lastName.isEmpty) {
-                   showSnackBar("Please enter your last name");
-                 } else if (birthDate.isEmpty) {
-                   showSnackBar("Please choose your Birth Date");
-                 } else if (address.isEmpty) {
-                   showSnackBar("Please enter your address");
-                 }
-                 else {
-                   await FirebaseFirestore.instance.collection("Employee").doc(User.id).update({
-                     'firstName':firstName,
-                     'lastName':lastName,
-                     'address':address,
-                     'birthDate':birthDate,
-                     'canEdit':false,
-                   });
-                 }
-               }
-                else{
-                  showSnackBar("You can't edit anymore , Please contact Department");
+               DocumentReference docRef = FirebaseFirestore.instance.collection("Employee").doc(User.id);
+               DocumentSnapshot docSnapshot = await docRef.get();
+
+                if (docSnapshot.get('canEdit')) {
+                  if (firstName.isEmpty) {
+                    showSnackBar("Please enter first name");
+                  } else if (lastName.isEmpty) {
+                    showSnackBar("Please enter your last name");
+                  } else if (birthDate.isEmpty) {
+                    showSnackBar("Please choose your Birth Date");
+                  } else if (address.isEmpty) {
+                    showSnackBar("Please enter your address");
+                  } else {
+                    await FirebaseFirestore.instance
+                        .collection("Employee")
+                        .doc(User.id)
+                        .update({
+                      'firstName': firstName,
+                      'lastName': lastName,
+                      'address': address,
+                      'birthDate': birthDate,
+                      'canEdit': false,
+                    });
+                  }
+                } else {
+                  showSnackBar(
+                      "You can't edit anymore , Please contact Department");
                 }
               },
               child: Container(
@@ -178,6 +209,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+
+  // Textfield widget for profile page
   Widget textField(
       String hint, String title, TextEditingController controller) {
     return Column(
@@ -219,10 +252,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void showSnackBar(String text) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      behavior: SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.floating,
         content: Text(
-      text,
-      style: TextStyle(),
-    )));
+          text,
+        )));
   }
 }

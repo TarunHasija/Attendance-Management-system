@@ -48,7 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _startLocationService() async {
     LocationService().initialize();
-
     LocationService().getLongitute().then((value) {
       setState(() {
         User.long = value!;
