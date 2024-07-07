@@ -34,6 +34,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     await ref.putFile(File(image!.path));
 
+    /*ref refer to the reference to the root of the firebase storage
+    then using getDownload Url we fetch the url of image which is a
+    firebase link  to the image after that using then function we pass
+    a value [value] to a setState function and assigning User.profilePic
+     value to the value of image url we fetch using the getDownload Url */
     ref.getDownloadURL().then((value){
       setState(() {
        User.profilePicLink = value;
@@ -66,6 +71,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Icons.person,
                     size: deviceHeight(context) / 15,
                     color: Colors.white,
+                    //using User.profilePic value which we assigned using
+                  //   the value of [value] and passing it ot network as its takes
+                  //   argument of a url and fetch that image
                   ):Image.network(User.profilePicLink),
                 ),
               ),
@@ -161,6 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                DocumentSnapshot docSnapshot = await docRef.get();
 
                 if (docSnapshot.get('canEdit')) {
+
                   if (firstName.isEmpty) {
                     showSnackBar("Please enter first name");
                   } else if (lastName.isEmpty) {
@@ -183,6 +192,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
                 } else {
                   showSnackBar(
+
                       "You can't edit anymore , Please contact Department");
                 }
               },
