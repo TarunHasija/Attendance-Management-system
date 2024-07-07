@@ -7,5 +7,5 @@ class User {
   static String lastName = " ";
   static String birthDate = " ";
   static String address = " ";
-  static bool conEdit = true;
+  static bool canEdit = true;
 }

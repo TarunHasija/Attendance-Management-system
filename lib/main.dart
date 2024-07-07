@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       localizationsDelegates: const [
         MonthYearPickerLocalizations.delegate,
+
       ],
     );
 
