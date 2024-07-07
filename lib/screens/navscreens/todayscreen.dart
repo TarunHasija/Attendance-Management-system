@@ -39,11 +39,11 @@ class _TodayScreenState extends State<TodayScreen> {
     });
   }
 
-  Future<void> scanQR() async {
+  Future<void> scanQRandCheck() async {
     String result = " ";
     try {
       result = await FlutterBarcodeScanner.scanBarcode(
-          "#ffffff", "cancel", false, ScanMode.QR);
+          "ffffff", "cancel", false, ScanMode.QR);
     } catch (e) {
       print(e);
     }
@@ -51,6 +51,128 @@ class _TodayScreenState extends State<TodayScreen> {
     setState(() {
       scanResult = result;
     });
+
+    if(scanResult == officeCode){
+      CollectionReference colref =
+      FirebaseFirestore.instance.collection('Employee');
+      if (User.lat != 0) {
+        _getLocation();
+        QuerySnapshot snap = await colref
+            .where('id', isEqualTo: User.employeeId)
+            .get();
+
+        if (snap.docs.isNotEmpty) {
+          DocumentSnapshot snap2 = await colref
+              .doc(snap.docs[0].id)
+              .collection('Record')
+              .doc(DateFormat('dd MMMM yyyy')
+              .format(DateTime.now()))
+              .get();
+
+          try {
+            String checkIn = snap2['checkIn'];
+
+            setState(() {
+              checkOut = DateFormat('hh:mm')
+                  .format(DateTime.now());
+            });
+
+            await colref
+                .doc(snap.docs[0].id)
+                .collection("Record")
+                .doc(DateFormat('dd MMMM yyyy')
+                .format(DateTime.now()))
+                .update({
+              'date': Timestamp.now(),
+              'checkIn': checkIn,
+              'checkOut': DateFormat('hh:mm')
+                  .format(DateTime.now()),
+              'checkInLocation': location,
+            });
+          } catch (e) {
+            setState(() {
+              checkIn = DateFormat('hh:mm')
+                  .format(DateTime.now());
+            });
+            await colref
+                .doc(snap.docs[0].id)
+                .collection("Record")
+                .doc(DateFormat('dd MMMM yyyy')
+                .format(DateTime.now()))
+                .set({
+              'date': Timestamp.now(),
+              'checkIn': DateFormat('hh:mm')
+                  .format(DateTime.now()),
+              'checkOut': "--/--",
+              'checkOutLocation': location,
+            });
+          }
+
+
+        } else {
+          // Handle the case when there are no documents
+        }
+      } else {
+        Timer(const Duration(seconds: 3), () async {
+          _getLocation();
+          QuerySnapshot snap = await colref
+              .where('id', isEqualTo: User.employeeId)
+              .get();
+
+          if (snap.docs.isNotEmpty) {
+            DocumentSnapshot snap2 = await colref
+                .doc(snap.docs[0].id)
+                .collection('Record')
+                .doc(DateFormat('dd MMMM yyyy')
+                .format(DateTime.now()))
+                .get();
+
+            try {
+              String checkIn = snap2['checkIn'];
+
+              setState(() {
+                checkOut = DateFormat('hh:mm')
+                    .format(DateTime.now());
+              });
+
+              await colref
+                  .doc(snap.docs[0].id)
+                  .collection("Record")
+                  .doc(DateFormat('dd MMMM yyyy')
+                  .format(DateTime.now()))
+                  .update({
+                'date': Timestamp.now(),
+                'checkIn': checkIn,
+                'checkOut': DateFormat('hh:mm')
+                    .format(DateTime.now()),
+                'checkInLocation': location,
+              });
+            } catch (e) {
+              setState(() {
+                checkIn = DateFormat('hh:mm')
+                    .format(DateTime.now());
+              });
+              await colref
+                  .doc(snap.docs[0].id)
+                  .collection("Record")
+                  .doc(DateFormat('dd MMMM yyyy')
+                  .format(DateTime.now()))
+                  .set({
+                'date': Timestamp.now(),
+                'checkIn': DateFormat('hh:mm')
+                    .format(DateTime.now()),
+                'checkOut': "--/--",
+                'checkOutLocation': location,
+              });
+            }
+
+
+          } else {
+            // Handle the case when there are no documents
+          }
+        });
+      }
+    }
   }
 
   void _getLocation() async {
@@ -216,7 +338,7 @@ class _TodayScreenState extends State<TodayScreen> {
           ),
           checkOut == '--/--'
               ? Container(
-                  margin: EdgeInsets.only(top: deviceHeight(context) / 50,bottom: deviceHeight(context)*0.04),
+                  margin: EdgeInsets.only(top: deviceHeight(context) *0.015,bottom: deviceHeight(context)*0.04),
                   child: Builder(builder: (context) {
                     final GlobalKey<SlideActionState> key = GlobalKey();
                     return SlideAction(
@@ -375,34 +497,39 @@ class _TodayScreenState extends State<TodayScreen> {
                 ),
           location != " "
               ? Center(
-                  child: Container(
-                      // width: double.infinity,
-                      height: deviceHeight(context) * 0.1,
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 10,
-                                offset: Offset(2, 2))
-                          ],
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(child: Text("Location :$location",)),
-                          ],
-                        ),
-                      )),
+                  child: Padding(
+                    padding:  EdgeInsets.only(bottom: deviceHeight(context)*.03),
+                    child: Container(
+                        // width: double.infinity,
+                        height: deviceHeight(context) * 0.1,
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 10,
+                                  offset: Offset(2, 2))
+                            ],
+                            borderRadius: BorderRadius.all(Radius.circular(20))),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(child: Text("Location :$location",)),
+                            ],
+                          ),
+                        )),
+                  ),
                 )
               : const SizedBox(),
 
-          GestureDetector(
+
+          // ------------- Qr Code checkin and checkOut -------------------
+          checkIn =="--/--" && checkOut =="--/--" ?GestureDetector(
             onTap: (){
-              scanQR();
+              scanQRandCheck();
             },
             child: Container(
               height: deviceWidth(context)/2.5,
@@ -427,7 +554,8 @@ class _TodayScreenState extends State<TodayScreen> {
                   Container(
                     margin: const EdgeInsets.only(top: 8),
                     child: Text(
-                      "Scan to\nCheck In",
+                      checkIn == "--/--"?
+                      "Scan to\nCheck In":"Scan to\nCheck Out",
                       style: TextStyle(
                         fontSize: deviceWidth(context)/24,
                         color: Colors.black54
@@ -437,7 +565,7 @@ class _TodayScreenState extends State<TodayScreen> {
                 ],
               ),
             ),
-          )
+          ):const SizedBox(),
         ],
       ),
     ));

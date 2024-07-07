@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-int currentIndex = 2;
+int currentIndex = 0;
 String id = '';
 
 class _HomeScreenState extends State<HomeScreen> {
