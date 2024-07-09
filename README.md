@@ -24,5 +24,8 @@ A mobile app developed with Flutter and Firebase to efficiently manage attendanc
 <img src="https://github.com/TarunHasija/Attendance-Management-system/assets/120959259/82e98752-6e3f-4022-9af9-05b552a4f809" width="200" />
 
 
+For packages used in this project you can refer to pubsec.yaml file on line 
+
+
 
 
